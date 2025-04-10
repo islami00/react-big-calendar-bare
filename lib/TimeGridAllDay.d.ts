@@ -6,3 +6,6 @@ declare module 'react-big-calendar/lib/TimeGridAllDay' {
 
   export default TimeGridAllDay
 }
+export type { TimeGridAllDayProps }
+
+export default TimeGridAllDay

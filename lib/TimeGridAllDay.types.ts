@@ -13,34 +13,22 @@ import type {
 import type { CalendarComponentsWithDefaults } from './components.types'
 import type { DateLocalizer } from './localizer.types'
 import type { CalendarViewComponentProps } from './components.types'
+import { OverlayProps } from './PopOverlay.types'
 
-interface TimeGridAllDayOverlayOptions {
-  date: Date
-  events: RBCEvent[]
-  position: {
-    top: number
-    left: number
-    height: number
-    width: string
-  }
-  target: HTMLElement
-}
-
-export interface TimeGridAllDayState {
-  overlay?: TimeGridAllDayOverlayOptions | null
+export interface TimeGridAllDayState<TEvent extends object = RBCEvent> {
+  overlay?: OverlayProps<TEvent> | null
   isOverflowing: boolean | null
 }
 
 type CommonProps<
   TEvent extends object = RBCEvent,
-  TResource extends object = RBCResource[]
+  TResource extends object = RBCResource
 > = Pick<
   TimeGridProps<TEvent, TResource>,
   | 'accessors'
   | 'resources'
   | 'min'
   | 'max'
-  | 'scrollToTime'
   | 'showMultiDayTimes'
   | 'rtl'
   | 'selected'
@@ -64,7 +52,6 @@ export interface TimeGridAllDayProps<
 
   range: Date[]
   getNow: () => Date
-  enableAutoScroll?: boolean
 
   resizable?: boolean
 
@@ -94,7 +81,7 @@ declare class TimeGridAllDay<
   TResource extends object = RBCResource
 > extends React.Component<
   TimeGridAllDayProps<TEvent, TResource>,
-  TimeGridAllDayState
+  TimeGridAllDayState<TEvent>
 > {}
 
 export default TimeGridAllDay

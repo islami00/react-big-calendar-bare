@@ -807,6 +807,21 @@ Popup.propTypes = {
   }),
 }
 
+/** @import * as types from "./misc.types" */
+
+/** @type {types.ForwardRefFunction} */
+var forwardRefWithGenerics = React.forwardRef
+
+/**
+ * @import {PopOverlayInnerProps, PopOverlayProps } from "./PopOverlay.types"
+ * @import {RBCEvent , RBCResource} from "./misc.types"
+ */
+
+/**
+ * @template {NonNullable<unknown>} [TEvent=RBCEvent]
+ * @template  {NonNullable<unknown>} [TResource=RBCResource]
+ * @param {PopOverlayInnerProps<TEvent, TResource>} param0
+ */
 function CalOverlay(_ref) {
   var containerRef = _ref.containerRef,
     _ref$popupOffset = _ref.popupOffset,
@@ -874,14 +889,22 @@ function CalOverlay(_ref) {
     }
   )
 }
-var PopOverlay = /*#__PURE__*/ React.forwardRef(function (props, ref) {
-  return /*#__PURE__*/ React.createElement(
-    CalOverlay,
-    Object.assign({}, props, {
-      containerRef: ref,
-    })
-  )
-})
+var PopOverlay = forwardRefWithGenerics(
+  /**
+   * @template {NonNullable<unknown>} [TEvent=RBCEvent]
+   * @template  {NonNullable<unknown>} [TResource=RBCResource]
+   * @param {PopOverlayProps<TEvent, TResource>} props
+   * @param {React.Ref<any>} ref
+   */
+  function (props, ref) {
+    return /*#__PURE__*/ React.createElement(
+      CalOverlay,
+      Object.assign({}, props, {
+        containerRef: ref,
+      })
+    )
+  }
+)
 PopOverlay.propTypes = {
   popupOffset: PropTypes.oneOfType([
     PropTypes.number,
