@@ -52,6 +52,10 @@ export default class TimeGridAllDay extends Component {
     return null
   }
 
+  componentDidUpdate() {
+    // Here to silence a react error
+  }
+
   componentDidMount() {
     window.addEventListener('resize', this.handleResize)
   }
@@ -82,6 +86,7 @@ export default class TimeGridAllDay extends Component {
 
   handleSelectEvent = (...args) => {
     //cancel any pending selections so only the event click goes through.
+
     notify(this.props.onSelectEvent, args)
   }
 
@@ -300,6 +305,7 @@ export default class TimeGridAllDay extends Component {
 
     const onHide = () => this.setState({ overlay: null })
     if (!this.state.overlay) return null
+
     return (
       <PopOverlay
         overlay={this.state.overlay}
