@@ -18,4 +18,4 @@ const localizer = momentLocalizer(moment)
 export function Example011() {
   return <CustomView localizer={localizer} />
 }
-Example011.storyName = 'Custom Calendar Views - Time View Grouped'
+Example011.storyName = 'Custom Calendar Views - Horizontal Resource View'

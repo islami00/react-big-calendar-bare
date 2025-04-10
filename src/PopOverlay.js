@@ -1,8 +1,18 @@
+/**
+ * @import {PopOverlayInnerProps, PopOverlayProps } from "./PopOverlay.types"
+ * @import {RBCEvent , RBCResource} from "./misc.types"
+ */
 import React, { useRef } from 'react'
 import PropTypes from 'prop-types'
 import { Overlay } from 'react-overlays'
 import Popup from './Popup'
+import { forwardRefWithGenerics } from './misc'
 
+/**
+ * @template {NonNullable<unknown>} [TEvent=RBCEvent]
+ * @template  {NonNullable<unknown>} [TResource=RBCResource]
+ * @param {PopOverlayInnerProps<TEvent, TResource>} param0
+ */
 function CalOverlay({
   containerRef,
   popupOffset = 5,
@@ -64,9 +74,15 @@ function CalOverlay({
   )
 }
 
-const PopOverlay = React.forwardRef((props, ref) => (
-  <CalOverlay {...props} containerRef={ref} />
-))
+const PopOverlay = forwardRefWithGenerics(
+  /**
+   * @template {NonNullable<unknown>} [TEvent=RBCEvent]
+   * @template  {NonNullable<unknown>} [TResource=RBCResource]
+   * @param {PopOverlayProps<TEvent, TResource>} props
+   * @param {React.Ref<any>} ref
+   */
+  (props, ref) => <CalOverlay {...props} containerRef={ref} />
+)
 
 PopOverlay.propTypes = {
   popupOffset: PropTypes.oneOfType([

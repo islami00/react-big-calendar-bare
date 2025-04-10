@@ -20,3 +20,4 @@ export interface DateLocalizer extends SharedDateLocalizerProps {
 declare module 'react-big-calendar/lib/localizer' {
   export default DateLocalizer
 }
+export default DateLocalizer

@@ -21,7 +21,9 @@ export default function CustomView({ localizer }) {
   return (
     <Fragment>
       <DemoLink fileName="timeViewGrouped">
-        <strong>The Calendar below implements a custom 3-day week view</strong>
+        <strong>
+          The Calendar below implements a custom horizontal resoucrce view view
+        </strong>
       </DemoLink>
       <div className="height600">
         <Calendar

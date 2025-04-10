@@ -5,3 +5,5 @@ declare module 'react-big-calendar/lib/Calendar' {
   export type { RBCCalendarProps }
   export default Calendar
 }
+export type { RBCCalendarProps }
+export default Calendar

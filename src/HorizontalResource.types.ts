@@ -6,10 +6,12 @@ import type {
   WeekTitleFn,
 } from './Week.types'
 
-export type HorizontalResourceProps<
+export interface HorizontalResourceProps<
   TEvent extends object = RBCEvent,
   TResource extends object = RBCResource
-> = Omit<RBCWeekProps<TEvent, TResource>, 'width'>
+> extends Omit<RBCWeekProps<TEvent, TResource>, 'width'> {
+  rangeFn?: WeekRangeFn
+}
 
 declare function HorizontalResource<
   TEvent extends object = RBCEvent,
