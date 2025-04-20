@@ -1,8 +1,8 @@
 /**
- * @import TimeGridAllDayClass,  {TimeGridAllDayProps, TimeGridAllDayState} from './TimeGridAllDay.types'
- * @import {OnSelectSlotArgs} from './BackgroundCells.types'
- * @import {ResourcesFn, ResourcesFnReturns, ResourcesFnGroupedEvents} from './utils/Resources.types'
- * @import {RBCEvent, RBCResource} from './misc.types'
+ * @import TimeGridAllDayClass,  {TimeGridAllDayProps, TimeGridAllDayState} from 'react-big-calendar/lib/TimeGridAllDay'
+ * @import {OnSelectSlotArgs} from 'react-big-calendar/lib/BackgroundCells'
+ * @import ResourcesFn , { ResourcesFnReturns, ResourcesFnGroupedEvents} from 'react-big-calendar/lib/utils/Resources'
+ * @import {Event, Resource} from 'react-big-calendar'
  */
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
@@ -24,8 +24,8 @@ import DateContentRow from './DateContentRow'
 import TimeGutterAllDay from './TimeGutterAllDay'
 
 /**
- * @template {NonNullable<unknown>} [TEvent=RBCEvent]
- * @template  {NonNullable<unknown>} [TResource=RBCResource]
+ * @template {NonNullable<unknown>} [TEvent=Event]
+ * @template  {NonNullable<unknown>} [TResource=Resource]
  * @extends {Component<TimeGridAllDayProps<TEvent, TResource>, TimeGridAllDayState<TEvent>>}
  * @type {typeof TimeGridAllDayClass}
  * */

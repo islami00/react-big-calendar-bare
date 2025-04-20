@@ -9,7 +9,7 @@ import DemoLink from '../../DemoLink.component'
 export default function CustomView({ localizer }) {
   const { defaultDate, views } = useMemo(
     () => ({
-      defaultDate: new Date(),
+      defaultDate: new Date(2024, 8, 29),
       views: {
         // month: true,
         week: HorizontalResource,

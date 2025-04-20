@@ -37,22 +37,4 @@ console.log(chalk.blue('Post process all CSS'))
 // We do not use postcss to process SASS, as it's
 // SASS processor still uses node-sass by default
 await $`postcss -r ./lib/**/*.css`
-
-// Copy ts files
-console.log(chalk.blue('...Finally the types'))
-await copyTypesInDir('./')
-await copyTypesInDir('./utils')
-
 console.log(chalk.blue('[BUILD COMPLETE]'))
-
-async function copyTypesInDir(dirname) {
-  const typeFiles = await fs
-    .readdir(path.resolve('./src', dirname))
-    .then((files) => files.filter((fn) => fn.endsWith('.ts')))
-
-  for (const file of typeFiles)
-    await fs.copy(
-      path.resolve('./src', dirname, file),
-      path.resolve('./lib', dirname, file)
-    )
-}

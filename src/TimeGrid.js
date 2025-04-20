@@ -1,5 +1,5 @@
 /**
- * @import {ResourcesFn} from "./utils/Resources.types"
+ * @import ResourcesFn from "react-big-calendar/lib/utils/Resources"
  * @import {TimeGridProps} from "react-big-calendar"
  * */
 import React, { Component, createRef } from 'react'

@@ -1,15 +1,11 @@
 /**
- * @import {MoveDateParam1} from './move.types'
- * @import {ViewComponent} from '../components.types'
+ * @import {move} from 'react-big-calendar'
  * */
 import invariant from 'invariant'
 import { navigate } from './constants'
 import VIEWS from '../Views'
 /**
- *
- * @param {ViewComponent | undefined} View
- * @param {MoveDateParam1} param1
- * @returns {Date}
+ * @type {move}
  */
 export default function moveDate(View, { action, date, today, ...props }) {
   View = typeof View === 'string' ? VIEWS[View] : View

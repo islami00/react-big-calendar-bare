@@ -1,7 +1,6 @@
 /**
- * @import ToolbarClass from "./Toolbar.types"
+ * @import ToolbarClass from "react-big-calendar/lib/Toolbar"
  * @import * as rbc from "react-big-calendar"
- * @import {ViewRegisteryKey} from "./components.types"
  * */
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -53,7 +52,7 @@ class Toolbar extends React.Component {
     this.props.onNavigate(action)
   }
 
-  /** @param {ViewRegisteryKey} action */
+  /** @param {rbc.View} action */
   view = (view) => {
     this.props.onView(view)
   }

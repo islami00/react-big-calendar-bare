@@ -1,4 +1,4 @@
-/** @import * as types from './localizer.types*/
+/** @import * as rbc from 'react-big-calendar*/
 import PropTypes from 'prop-types'
 import invariant from 'invariant'
 import {
@@ -138,9 +138,9 @@ function isSameDate(date1, date2) {
 function startAndEndAreDateOnly(start, end) {
   return isJustDate(start) && isJustDate(end)
 }
-/** @implements {types.DateLocalizer} */
+/** @implements {rbc.DateLocalizer} */
 export class DateLocalizer {
-  /** @param {types.DateLocalizerSpec} spec */
+  /** @param {rbc.DateLocalizerSpec} spec */
   constructor(spec) {
     invariant(
       typeof spec.format === 'function',

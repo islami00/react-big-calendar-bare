@@ -1,5 +1,4 @@
-/** @import RBCCalendar, {RBCCalendarProps,ViewComponent, ViewRegisteryKey} from "./Calendar.types" */
-/** @import  {ViewComponent, ViewRegisteryKey} from "./components.types" */
+/** @import  {Calendar as RBCCalendar, CalendarProps,ViewComponent, View} from "react-big-calendar" */
 /** @import * as rbc from 'react-big-calendar' */
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -909,12 +908,12 @@ class Calendar extends React.Component {
       context: Calendar.getContext(this.props),
     }
   }
-  /** @param {RBCCalendarProps} nextProps */
+  /** @param {CalendarProps} nextProps */
   static getDerivedStateFromProps(nextProps) {
     return { context: Calendar.getContext(nextProps) }
   }
 
-  /** @param {RBCCalendarProps} */
+  /** @param {CalendarProps} */
   static getContext({
     startAccessor,
     endAccessor,
@@ -1167,7 +1166,7 @@ class Calendar extends React.Component {
 
   /**
    * @param {Date} date
-   * @param {ViewRegisteryKey} view
+   * @param {View} view
    * */
   handleDrillDown = (date, view) => {
     const { onDrillDown } = this.props

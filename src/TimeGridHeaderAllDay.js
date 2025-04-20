@@ -1,7 +1,6 @@
-/** @import {TimeGridHeaderAllDayProps} from "./TimeGridHeaderAllDay.types" */
+/** @import {TimeGridHeaderAllDayProps} from "react-big-calendar/lib/TimeGridHeaderAllDay" */
 /** @import {Component} from "react" */
-/** @import {ViewRegisteryKey} from "./components.types" */
-/** @import { RBCEvent, RBCResource } from "./misc.types" */
+/** @import { Event, Resource,View } from "react-big-calendar" */
 import PropTypes from 'prop-types'
 import clsx from 'clsx'
 import scrollbarSize from 'dom-helpers/scrollbarSize'
@@ -11,15 +10,15 @@ import Header from './Header'
 import { notify } from './utils/helpers'
 
 /**
- * @template {NonNullable<unknown>} [TEvent=RBCEvent]
- * @template  {NonNullable<unknown>} [TResource=RBCResource]
+ * @template {NonNullable<unknown>} [TEvent=Event]
+ * @template  {NonNullable<unknown>} [TResource=Resource]
  * @extends {Component<TimeGridHeaderAllDayProps<TEvent,TResource>>}
  */
 class TimeGridHeaderAllDay extends React.Component {
   /**
    *
    * @param {Date} date
-   * @param {ViewRegisteryKey} view
+   * @param {View} view
    * @param {React.MouseEvent} e
    */
   handleHeaderClick = (date, view, e) => {

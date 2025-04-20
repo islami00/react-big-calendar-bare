@@ -1,15 +1,15 @@
 /**
- * @import * as types from './Resources.types'
- * @import {CalendarAccessors, RBCResource, RBCEvent} from '../misc.types'
+ * @import ResourcesFn from 'react-big-calendar/lib/utils/Resources'
+ * @import {CalendarAccessors, Resource, Event} from 'react-big-calendar'
  * */
 export const NONE = {}
 
 /**
- * @template {NonNullable<unknown>} [TEvent=RBCEvent]
- * @template {NonNullable<unknown>} [TResource=RBCResource]
+ * @template {NonNullable<unknown>} [TEvent=Event]
+ * @template {NonNullable<unknown>} [TResource=Resource]
  *  @param { TResource[] | undefined} resources
  *  @param {CalendarAccessors<TEvent, TResource>} accessors
- *  @returns {types.ResourcesFnReturns<TEvent, TResource>}
+ *  @returns {ResourcesFn<TEvent, TResource>}
  */
 export default function Resources(resources, accessors) {
   return {

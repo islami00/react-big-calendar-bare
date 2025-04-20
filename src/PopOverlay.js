@@ -1,6 +1,6 @@
 /**
- * @import {PopOverlayInnerProps, PopOverlayProps } from "./PopOverlay.types"
- * @import {RBCEvent , RBCResource} from "./misc.types"
+ * @import {PopOverlayInnerProps, PopOverlayProps } from "react-big-calendar/lib/PopOverlay"
+ * @import {Event , Resource} from "react-big-calendar"
  */
 import React, { useRef } from 'react'
 import PropTypes from 'prop-types'
@@ -9,8 +9,8 @@ import Popup from './Popup'
 import { forwardRefWithGenerics } from './misc'
 
 /**
- * @template {NonNullable<unknown>} [TEvent=RBCEvent]
- * @template  {NonNullable<unknown>} [TResource=RBCResource]
+ * @template {NonNullable<unknown>} [TEvent=Event]
+ * @template  {NonNullable<unknown>} [TResource=Resource]
  * @param {PopOverlayInnerProps<TEvent, TResource>} param0
  */
 function CalOverlay({
@@ -76,8 +76,8 @@ function CalOverlay({
 
 const PopOverlay = forwardRefWithGenerics(
   /**
-   * @template {NonNullable<unknown>} [TEvent=RBCEvent]
-   * @template  {NonNullable<unknown>} [TResource=RBCResource]
+   * @template {NonNullable<unknown>} [TEvent=Event]
+   * @template  {NonNullable<unknown>} [TResource=Resource]
    * @param {PopOverlayProps<TEvent, TResource>} props
    * @param {React.Ref<any>} ref
    */

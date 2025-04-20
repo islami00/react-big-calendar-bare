@@ -1,6 +1,6 @@
 /**
- * @import WeekClass from "./Week.types"
- * @import * as misc from "./misc.types"
+ * @import WeekClass from "react-big-calendar/lib/Week"
+ * @import * as rbc from "react-big-calendar"
  * */
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -10,8 +10,8 @@ import { DayLayoutAlgorithmPropType } from './utils/propTypes'
 
 import TimeGrid from './TimeGrid'
 /**
- * @template {NonNullable<unknown>} [TEvent=misc.RBCEvent]
- * @template {NonNullable<unknown>} [TResource=misc.RBCResource]
+ * @template {NonNullable<unknown>} [TEvent=rbc.Event]
+ * @template {NonNullable<unknown>} [TResource=rbc.Resource]
  * @extends {WeekClass<TEvent, TResource>}
  * @type {typeof WeekClass<TEvent, TResource>}
  */

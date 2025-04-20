@@ -1,4 +1,5 @@
-/** @import  * as types from "./BackgroundCells.types" */
+/** @import  * as types from "react-big-calendar/lib/BackgroundCells" */
+/** @import  BackgroundCellsClass from "react-big-calendar/lib/BackgroundCells" */
 import React, { createRef } from 'react'
 import PropTypes from 'prop-types'
 import clsx from 'clsx'
@@ -8,7 +9,7 @@ import { dateCellSelection, getSlotAtX, pointInBox } from './utils/selection'
 import Selection, { getBoundsForNode, isEvent, isShowMore } from './Selection'
 
 /**
- * @extends {types.BackgroundCells}
+ * @extends {BackgroundCellsClass}
  * */
 class BackgroundCells extends React.Component {
   /**

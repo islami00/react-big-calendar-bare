@@ -1,6 +1,6 @@
 /**
- * @import * as types from './DateSlotMetrics.types'
- * @import {RowSegment} from './eventLevels.types'
+ * @import * as types from 'react-big-calendar/lib/utils/DateSlotMetrics'
+ * @import {RowSegment} from 'react-big-calendar/lib/utils/eventLevels'
  *  */
 import memoize from 'memoize-one'
 import { eventSegments, endOfRange, eventLevels } from './eventLevels'

@@ -1,14 +1,14 @@
 /** @import * as R from 'react' */
-/** @import * as types from './TimeGutterAllDay.types' */
-/** @import {RBCEvent, RBCResource} from './misc.types' */
+/** @import * as types from 'react-big-calendar/lib/TimeGutterAllDay' */
+/** @import {Event, Resource} from 'react-big-calendar' */
 import React from 'react'
 import clsx from 'clsx'
 import TimeGutterAllDaySlot from './TimeGutterAllDaySlot'
 import { forwardRefWithGenerics } from './misc'
 
 /**
- * @template {NonNullable<unknown>} [TEvent=RBCEvent]
- * @template {NonNullable<unknown>} [TResource=RBCResource]
+ * @template {NonNullable<unknown>} [TEvent=Event]
+ * @template {NonNullable<unknown>} [TResource=Resource]
  * @param {types.TimeGutterAllDayProps<TEvent, TResource>} props
  * @param {R.Ref<HTMLDivElement>} ref Gutter Ref
  */

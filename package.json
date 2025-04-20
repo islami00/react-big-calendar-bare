@@ -76,7 +76,7 @@
     "@storybook/react": "^6.5.16",
     "@storybook/theming": "6.5.16",
     "@types/invariant": "^2.2.37",
-    "@types/react-big-calendar": "^1.8.12",
+    "@types/react-big-calendar": "1.8.9",
     "@typescript-eslint/eslint-plugin": "^5.48.1",
     "autoprefixer": "^10.4.13",
     "babel-jest": "^29.3.1",
@@ -133,5 +133,10 @@
   "bugs": {
     "url": "https://github.com/jquense/react-big-calendar/issues"
   },
-  "homepage": "https://github.com/jquense/react-big-calendar#readme"
+  "homepage": "https://github.com/jquense/react-big-calendar#readme",
+  "pnpm": {
+    "patchedDependencies": {
+      "@types/react-big-calendar@1.8.9": "patches/@types__react-big-calendar@1.8.9.patch"
+    }
+  }
 }

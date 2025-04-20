@@ -1,7 +1,7 @@
 /**
- * @import {CalendarAccessors} from '../misc.types'
- * @import {DateLocalizer } from '../localizer.types'
- * @import {EventSegmentsFn, EventLevelsFn} from './eventLevels.types'
+ * @import {CalendarAccessors} from 'react-big-calendar'
+ * @import {DateLocalizer } from 'react-big-calendar'
+ * @import {EventSegmentsFn, EventLevelsFn} from 'react-big-calendar/lib/utils/eventLevels'
  */
 import findIndex from 'lodash/findIndex'
 

@@ -1,4 +1,4 @@
-/** @import HorizontalResourceFn, {HorizontalResourceProps} from "./HorizontalResource.types" */
+/** @import  {HorizontalResourceProps} from "react-big-calendar/lib/HorizontalResource" */
 import React from 'react'
 
 import { navigate } from './utils/constants'
@@ -9,7 +9,6 @@ import TimeGridAllDay from './TimeGridAllDay'
  * @template {NonNullable<unknown>} TEvent
  * @template {NonNullable<unknown>} TResource
  * @param {HorizontalResourceProps<TEvent, TResource>} props
- * @type {HorizontalResourceFn<TEvent, TResource>}
  */
 function HorizontalResource(props) {
   let {

@@ -1,5 +1,6 @@
-/** @type {import("./resources.types").ResourceEvents} */
+/** @import  { Event, Resource } from 'react-big-calendar'  */
 export default {
+  /** @type {Event[]} */
   events: [
     {
       title: 'Rencontre',
@@ -81,7 +82,7 @@ export default {
       resourceId: 'e',
     },
   ],
-
+  /** @type {Resource[]} */
   list: [
     {
       id: 'a',

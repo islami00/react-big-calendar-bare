@@ -1,5 +1,5 @@
-/** @import * as types from './EventEndingRow.types*/
-/** @import {RowSegment} from './utils/eventLevels.types' */
+/** @import EventEndingRowClass from 'react-big-calendar/lib/EventEndingRow*/
+/** @import {RowSegment} from 'react-big-calendar/lib/utils/eventLevels' */
 import PropTypes from 'prop-types'
 import React from 'react'
 import clsx from 'clsx'
@@ -15,7 +15,7 @@ let isSegmentInSlot = (seg, slot) => seg.left <= slot && seg.right >= slot
 let eventsInSlot = (segments, slot) =>
   segments.filter((seg) => isSegmentInSlot(seg, slot)).map((seg) => seg.event)
 
-/** @extends  {types.EventEndingRow} */
+/** @extends  {EventEndingRowClass} */
 class EventEndingRow extends React.Component {
   render() {
     let {

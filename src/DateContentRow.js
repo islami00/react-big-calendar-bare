@@ -1,7 +1,7 @@
 /**
- * @import * as types from './DateContentRow.types'
- * @import * as bgcTypes from './BackgroundCells.types'
- * @import {RBCEvent} from './misc.types'
+ * @import DateContentRowClass, {DateContentRowProps} from 'react-big-calendar/lib/DateContentRow'
+ * @import * as bgcTypes from 'react-big-calendar/lib/BackgroundCells'
+ * @import {Event} from 'react-big-calendar'
  * @import {Component} from 'react'
  * */
 import React, { createRef } from 'react'
@@ -18,13 +18,13 @@ import ScrollableWeekWrapper from './ScrollableWeekWrapper'
 import * as DateSlotMetrics from './utils/DateSlotMetrics'
 
 /**
- * @template {NonNullable<unknown>} [TEvent=RBCEvent]
- * @extends {Component<types.DateContentRowProps<TEvent>>}
- * @type {typeof types.DateContentRow}
+ * @template {NonNullable<unknown>} [TEvent=Event]
+ * @extends {Component<DateContentRowProps<TEvent>>}
+ * @type {typeof DateContentRowClass}
  */
 class DateContentRow extends React.Component {
   /**
-   * @param  {[props: types.DateContentRowProps<TEvent>, context: any]} args
+   * @param  {[props: DateContentRowProps<TEvent>, context: any]} args
    */
   constructor(...args) {
     super(...args)

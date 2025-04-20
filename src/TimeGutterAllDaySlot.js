@@ -1,13 +1,13 @@
 /**
- * @import * as types from "./TimeGutterAllDaySlot.types"
- * @import {RBCEvent, RBCResource} from "./misc.types"
+ * @import * as rbc from "react-big-calendar"
+ * @import {TimeGutterAllDaySlotProps} from "react-big-calendar/lib/TimeGutterAllDaySlot"
  * */
 import * as React from 'react'
 import { forwardRefWithGenerics } from './misc'
 /**
- * @template {NonNullable<unknown>} [TEvent=RBCEvent]
- * @template {NonNullable<unknown>} [TResource=RBCResource]
- * @param {types.TimeGutterAllDaySlotProps<TEvent, TResource>} props
+ * @template {NonNullable<unknown>} [TEvent=rbc.Event]
+ * @template {NonNullable<unknown>} [TResource=rbc.Resource]
+ * @param {TimeGutterAllDaySlotProps<TEvent, TResource>} props
  * @param {React.Ref<any>} ref
  */
 function TimeGutterAllDaySlot(props, ref) {

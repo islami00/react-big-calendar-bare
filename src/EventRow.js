@@ -1,9 +1,10 @@
+/** @import EventRowClass from "react-big-calendar/lib/EventRow" */
 import PropTypes from 'prop-types'
 import clsx from 'clsx'
 import React from 'react'
 import EventRowMixin from './EventRowMixin'
 
-/** @extends {React.Component<import("./EventRow.types").EventRowProps>} */
+/** @extends {EventRowClass} */
 class EventRow extends React.Component {
   render() {
     let {

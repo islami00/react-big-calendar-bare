@@ -1,4 +1,4 @@
-/** @import * as types from './TimeSlots.types*/
+/** @import * as types from 'react-big-calendar/lib/utils/TimeSlots*/
 const getKey = ({ min, max, step, slots, localizer }) =>
   `${+localizer.startOf(min, 'minutes')}` +
   `${+localizer.startOf(max, 'minutes')}` +

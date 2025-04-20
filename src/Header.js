@@ -1,4 +1,4 @@
-/** @import {HeaderProps} from "./Header.types" */
+/** @import {HeaderProps} from "react-big-calendar" */
 import PropTypes from 'prop-types'
 import React from 'react'
 
