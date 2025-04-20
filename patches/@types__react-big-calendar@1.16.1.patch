@@ -1,8 +1,8 @@
 diff --git a/index.d.ts b/index.d.ts
-index 9f9d620a4ef8ff6960d59e3e6de4f441ff5b1eae..3c24928c818378ed450b4835765d9d8c4f3dd261 100644
+index d376bd2b35006db791c87bc143b1124fe624af6f..0cfea06d0fbdd0ce5d0c1c3bd45d4af9be501228 100644
 --- a/index.d.ts
 +++ b/index.d.ts
-@@ -1,617 +1,909 @@
+@@ -1,627 +1,924 @@
 +import type { SelectableOptions } from './lib/BackgroundCells';
  import {
 -    add,
@@ -229,14 +229,14 @@ index 9f9d620a4ef8ff6960d59e3e6de4f441ff5b1eae..3c24928c818378ed450b4835765d9d8c
 +  end?: Date | undefined;
 +  resourceId?: ResourceIdOptions;
 +  resource?: Resource;
- }
++}
 +export type ResourceIdOptions = string | number; // must be unique
 +
 +/** Alternatively, resourceIdAccessor and resourceTitleAccessor can be used instead */
 +export interface Resource {
 +  id?: ResourceIdOptions;
 +  title?: string;
-+}
+ }
 +
  export interface DateRange {
 -    start: Date;
@@ -307,6 +307,25 @@ index 9f9d620a4ef8ff6960d59e3e6de4f441ff5b1eae..3c24928c818378ed450b4835765d9d8c
 -     * A time range format for selecting time slots, e.g "8:00am — 2:00pm"
 -     */
 -    selectRangeFormat?: DateRangeFormatFunction | undefined;
+-
+-    agendaDateFormat?: DateFormat | undefined;
+-    agendaTimeFormat?: DateFormat | undefined;
+-    agendaTimeRangeFormat?: DateRangeFormatFunction | undefined;
+-
+-    /**
+-     * Time range displayed on events.
+-     */
+-    eventTimeRangeFormat?: DateRangeFormatFunction | undefined;
+-
+-    /**
+-     * An optional event time range for events that continue onto another day
+-     */
+-    eventTimeRangeStartFormat?: DateRangeFormatFunction | undefined;
+-
+-    /**
+-     * An optional event time range for events that continue from another day
+-     */
+-    eventTimeRangeEndFormat?: DateRangeFormatFunction | undefined;
 +  /**
 +   * Format for the day of the month heading in the Month view.
 +   * e.g. "01", "02", "03", etc
@@ -373,57 +392,118 @@ index 9f9d620a4ef8ff6960d59e3e6de4f441ff5b1eae..3c24928c818378ed450b4835765d9d8c
 +   * An optional event time range for events that continue from another day
 +   */
 +  eventTimeRangeEndFormat?: DateRangeFormatFunction | undefined;
-+}
+ }
  
--    agendaDateFormat?: DateFormat | undefined;
--    agendaTimeFormat?: DateFormat | undefined;
--    agendaTimeRangeFormat?: DateRangeFormatFunction | undefined;
-+export interface HeaderProps {
+ export interface HeaderProps {
+-    date: Date;
+-    label: string;
+-    localizer: DateLocalizer;
 +  date: Date;
 +  label?: React.ReactNode;
 +  localizer: DateLocalizer;
-+}
+ }
  
--    /**
--     * Time range displayed on events.
--     */
--    eventTimeRangeFormat?: DateRangeFormatFunction | undefined;
-+export interface DateHeaderProps {
+ export interface DateHeaderProps {
+-    date: Date;
+-    drilldownView: string;
+-    isOffRange: boolean;
+-    label: string;
+-    onDrillDown: () => void;
 +  date: Date;
 +  drilldownView: string;
 +  isOffRange: boolean;
 +  label: string;
 +  onDrillDown: () => void;
-+}
+ }
  
--    /**
--     * An optional event time range for events that continue onto another day
--     */
--    eventTimeRangeStartFormat?: DateRangeFormatFunction | undefined;
+-export interface ResourceHeaderProps<TResource extends object = object> {
+-    label: React.ReactNode;
+-    index: number;
+-    resource: TResource;
 +export interface ResourceHeaderProps<TResource extends object = Resource> {
 +  label: React.ReactNode;
 +  index: number;
 +  resource: TResource;
-+}
+ }
  
--    /**
--     * An optional event time range for events that continue from another day
--     */
--    eventTimeRangeEndFormat?: DateRangeFormatFunction | undefined;
-+export interface DateCellWrapperProps {
+ export interface DateCellWrapperProps {
+-    range: Date[];
+-    value: Date;
+-    children: React.JSX.Element;
 +  range: Date[];
 +  value: Date;
 +  children: React.JSX.Element;
+ }
+-
+ export interface ShowMoreProps<TEvent extends object = Event> {
+-    localizer: DateLocalizer;
+-    slot: number;
+-    slotDate: Date;
+-    count: number;
+-    events: TEvent[];
+-    remainingEvents: TEvent[];
+-}
+-
+-export interface Components<TEvent extends object = Event, TResource extends object = object> {
+-    event?: React.ComponentType<EventProps<TEvent>> | undefined;
+-    eventWrapper?: React.ComponentType<EventWrapperProps<TEvent>> | undefined;
+-    eventContainerWrapper?: React.ComponentType | undefined;
+-    dateCellWrapper?: React.ComponentType<DateCellWrapperProps> | undefined;
+-    dayColumnWrapper?: React.ComponentType | undefined;
+-    timeSlotWrapper?: React.ComponentType | undefined;
+-    timeGutterHeader?: React.ComponentType | undefined;
+-    timeGutterWrapper?: React.ComponentType | undefined;
+-    toolbar?: React.ComponentType<ToolbarProps<TEvent, TResource>> | undefined;
+-    agenda?:
+-        | {
+-            date?: React.ComponentType | undefined;
+-            time?: React.ComponentType | undefined;
+-            event?: React.ComponentType<EventProps<TEvent>> | undefined;
+-        }
+-        | undefined;
+-    day?:
+-        | {
+-            header?: React.ComponentType<HeaderProps> | undefined;
+-            event?: React.ComponentType<EventProps<TEvent>> | undefined;
+-        }
+-        | undefined;
+-    week?:
+-        | {
+-            header?: React.ComponentType<HeaderProps> | undefined;
+-            event?: React.ComponentType<EventProps<TEvent>> | undefined;
+-        }
+-        | undefined;
+-    work_week?:
+-        | {
+-            header?: React.ComponentType<HeaderProps> | undefined;
+-            event?: React.ComponentType<EventProps<TEvent>> | undefined;
+-        }
+-        | undefined;
+-    month?:
+-        | {
+-            header?: React.ComponentType<HeaderProps> | undefined;
+-            dateHeader?: React.ComponentType<DateHeaderProps> | undefined;
+-            event?: React.ComponentType<EventProps<TEvent>> | undefined;
+-        }
+-        | undefined;
+-    /**
+-     * component used as a header for each column in the TimeGridHeader
+-     */
+-    header?: React.ComponentType<HeaderProps> | undefined;
+-    resourceHeader?: React.ComponentType<ResourceHeaderProps<TResource>> | undefined;
+-    showMore?: React.ComponentType<ShowMoreProps<TEvent>>;
++  localizer: DateLocalizer;
++  slot: number;
++  slotDate: Date;
++  count: number;
++  events: TEvent[];
++  remainingEvents: TEvent[];
 +}
 +export interface CalendarViewComponentProps {
 +  onDrillDown: (date: Date, view: View) => void;
 +  getDrilldownView: (targetDate: Date) => View | null;
- }
- 
--export interface HeaderProps {
--    date: Date;
--    label: string;
--    localizer: DateLocalizer;
++}
++
 +export interface DefaultViews {
 +  month: ViewComponent;
 +  week: ViewComponent;
@@ -432,12 +512,15 @@ index 9f9d620a4ef8ff6960d59e3e6de4f441ff5b1eae..3c24928c818378ed450b4835765d9d8c
 +  agenda: ViewComponent;
  }
  
--export interface DateHeaderProps {
+-export interface ToolbarProps<TEvent extends object = Event, TResource extends object = object> {
 -    date: Date;
--    drilldownView: string;
--    isOffRange: boolean;
+-    view: View;
+-    views: ViewsProps<TEvent, TResource>;
 -    label: string;
--    onDrillDown: () => void;
+-    localizer: { messages: Messages<TEvent> };
+-    onNavigate: (navigate: NavigateAction, date?: Date) => void;
+-    onView: (view: View) => void;
+-    children?: React.ReactNode | undefined;
 +type DefaultViewsOptionalBoolean = {
 +  [K in keyof DefaultViews]?: true | DefaultViews[K];
 +};
@@ -446,12 +529,8 @@ index 9f9d620a4ef8ff6960d59e3e6de4f441ff5b1eae..3c24928c818378ed450b4835765d9d8c
 +interface CommonViewStaticMethodProps {
 +  [key: string]: any;
 +  localizer: DateLocalizer;
- }
- 
--export interface ResourceHeaderProps<TResource extends object = object> {
--    label: React.ReactNode;
--    index: number;
--    resource: TResource;
++}
++
 +export interface ViewFunctionalComponent
 +  extends ViewStatic,
 +    React.FunctionComponent<CalendarViewComponentProps> {}
@@ -476,7 +555,7 @@ index 9f9d620a4ef8ff6960d59e3e6de4f441ff5b1eae..3c24928c818378ed450b4835765d9d8c
 +    | undefined;
 +  timeGutterHeader?: React.ComponentType | undefined;
 +  timeGutterWrapper?: React.ComponentType | undefined;
-+  toolbar?: React.ComponentType<ToolbarProps> | undefined;
++  toolbar?: React.ComponentType<ToolbarProps<TEvent>> | undefined;
 +  agenda?:
 +    | {
 +        date?: React.ComponentType | undefined;
@@ -529,78 +608,16 @@ index 9f9d620a4ef8ff6960d59e3e6de4f441ff5b1eae..3c24928c818378ed450b4835765d9d8c
 +  children: React.ReactNode;
 +  value: Date;
 +  resource: null | TResource;
- }
- 
--export interface DateCellWrapperProps {
--    range: Date[];
--    value: Date;
--    children: React.JSX.Element;
--}
--
--export interface Components<TEvent extends object = Event, TResource extends object = object> {
--    event?: React.ComponentType<EventProps<TEvent>> | undefined;
--    eventWrapper?: React.ComponentType<EventWrapperProps<TEvent>> | undefined;
--    eventContainerWrapper?: React.ComponentType | undefined;
--    dateCellWrapper?: React.ComponentType<DateCellWrapperProps> | undefined;
--    dayColumnWrapper?: React.ComponentType | undefined;
--    timeSlotWrapper?: React.ComponentType | undefined;
--    timeGutterHeader?: React.ComponentType | undefined;
--    timeGutterWrapper?: React.ComponentType | undefined;
--    toolbar?: React.ComponentType<ToolbarProps<TEvent, TResource>> | undefined;
--    agenda?:
--        | {
--            date?: React.ComponentType | undefined;
--            time?: React.ComponentType | undefined;
--            event?: React.ComponentType<EventProps<TEvent>> | undefined;
--        }
--        | undefined;
--    day?:
--        | {
--            header?: React.ComponentType<HeaderProps> | undefined;
--            event?: React.ComponentType<EventProps<TEvent>> | undefined;
--        }
--        | undefined;
--    week?:
--        | {
--            header?: React.ComponentType<HeaderProps> | undefined;
--            event?: React.ComponentType<EventProps<TEvent>> | undefined;
--        }
--        | undefined;
--    work_week?:
--        | {
--            header?: React.ComponentType<HeaderProps> | undefined;
--            event?: React.ComponentType<EventProps<TEvent>> | undefined;
--        }
--        | undefined;
--    month?:
--        | {
--            header?: React.ComponentType<HeaderProps> | undefined;
--            dateHeader?: React.ComponentType<DateHeaderProps> | undefined;
--            event?: React.ComponentType<EventProps<TEvent>> | undefined;
--        }
--        | undefined;
--    /**
--     * component used as a header for each column in the TimeGridHeader
--     */
--    header?: React.ComponentType<HeaderProps> | undefined;
--    resourceHeader?: React.ComponentType<ResourceHeaderProps<TResource>> | undefined;
++}
++
 +export interface TimeGutterAllDayWrapperProps<
 +  TEvent extends object = Event,
 +  TResource extends object = Resource,
 +> {
 +  children: React.ReactNode;
 +  resources: ResourcesFnReturns<TEvent, TResource>;
- }
- 
--export interface ToolbarProps<TEvent extends object = Event, TResource extends object = object> {
--    date: Date;
--    view: View;
--    views: ViewsProps<TEvent, TResource>;
--    label: string;
--    localizer: { messages: Messages };
--    onNavigate: (navigate: NavigateAction, date?: Date) => void;
--    onView: (view: View) => void;
--    children?: React.ReactNode | undefined;
++}
++
 +export type CalendarComponentsWithDefaults<
 +  TEvent extends object = Event,
 +  TResource extends object = Resource,
@@ -615,10 +632,10 @@ index 9f9d620a4ef8ff6960d59e3e6de4f441ff5b1eae..3c24928c818378ed450b4835765d9d8c
 +  | 'timeGutterAllDayWrapper'
 +>;
 +
-+export interface ToolbarProps {
-+  date: Date;
++export interface ToolbarProps<TEvent extends object = Event> {
++  date: stringOrDate;
 +  label: string;
-+  localizer: { messages: Messages };
++  localizer: { messages: Messages<TEvent> };
 +  onNavigate: (navigate: NavigateAction, date?: Date) => void;
 +  view: View;
 +  views: ViewRegistery;
@@ -693,41 +710,47 @@ index 9f9d620a4ef8ff6960d59e3e6de4f441ff5b1eae..3c24928c818378ed450b4835765d9d8c
 +  continuesLater: boolean;
  }
  
- export interface Messages {
--    date?: string | undefined;
--    time?: string | undefined;
--    event?: string | undefined;
--    allDay?: string | undefined;
--    week?: string | undefined;
--    work_week?: string | undefined;
--    day?: string | undefined;
--    month?: string | undefined;
--    previous?: string | undefined;
--    next?: string | undefined;
--    yesterday?: string | undefined;
--    tomorrow?: string | undefined;
--    today?: string | undefined;
--    agenda?: string | undefined;
--    showMore?: ((count: number) => string) | undefined;
--    noEventsInRange?: string | undefined;
-+  date?: string | undefined;
-+  time?: string | undefined;
-+  event?: string | undefined;
-+  allDay?: string | undefined;
-+  week?: string | undefined;
-+  work_week?: string | undefined;
-+  day?: string | undefined;
-+  month?: string | undefined;
-+  previous?: string | undefined;
-+  next?: string | undefined;
-+  yesterday?: string | undefined;
-+  tomorrow?: string | undefined;
-+  today?: string | undefined;
-+  agenda?: string | undefined;
-+  showMore?: ((count: number) => string) | undefined;
-+  noEventsInRange?: string | undefined;
+ export interface Messages<TEvent extends object = Event> {
+-    date?: React.ReactNode | undefined;
+-    time?: React.ReactNode | undefined;
+-    event?: React.ReactNode | undefined;
+-    allDay?: React.ReactNode | undefined;
+-    week?: React.ReactNode | undefined;
+-    work_week?: React.ReactNode | undefined;
+-    day?: React.ReactNode | undefined;
+-    month?: React.ReactNode | undefined;
+-    previous?: React.ReactNode | undefined;
+-    next?: React.ReactNode | undefined;
+-    yesterday?: React.ReactNode | undefined;
+-    tomorrow?: React.ReactNode | undefined;
+-    today?: React.ReactNode | undefined;
+-    agenda?: React.ReactNode | undefined;
+-    showMore?: ((count: number, remainingEvents: TEvent[], events: TEvent[]) => React.ReactNode) | undefined;
+-    noEventsInRange?: React.ReactNode | undefined;
++  date?: React.ReactNode | undefined;
++  time?: React.ReactNode | undefined;
++  event?: React.ReactNode | undefined;
++  allDay?: React.ReactNode | undefined;
++  week?: React.ReactNode | undefined;
++  work_week?: React.ReactNode | undefined;
++  day?: React.ReactNode | undefined;
++  month?: React.ReactNode | undefined;
++  previous?: React.ReactNode | undefined;
++  next?: React.ReactNode | undefined;
++  yesterday?: React.ReactNode | undefined;
++  tomorrow?: React.ReactNode | undefined;
++  today?: React.ReactNode | undefined;
++  agenda?: React.ReactNode | undefined;
++  showMore?:
++    | ((
++        count: number,
++        remainingEvents: TEvent[],
++        events: TEvent[],
++      ) => React.ReactNode)
++    | undefined;
++  noEventsInRange?: React.ReactNode | undefined;
  }
- 
+-
  export interface SlotInfo {
 -    start: Date;
 -    end: Date;
@@ -784,7 +807,7 @@ index 9f9d620a4ef8ff6960d59e3e6de4f441ff5b1eae..3c24928c818378ed450b4835765d9d8c
  }
  
  export type Culture = string;
- export type FormatInput = number | string | Date;
+ export type FormatInput = number | string | Date | DateRange;
  
 +interface InEventRangeArgs {
 +  event: DateRange;
@@ -795,82 +818,81 @@ index 9f9d620a4ef8ff6960d59e3e6de4f441ff5b1eae..3c24928c818378ed450b4835765d9d8c
 -    format: (value: FormatInput, format: string, culture?: Culture) => string;
 -    formats: Formats;
 -    propType?: Validator<any> | undefined;
--    startOfWeek: StartOfWeek;
--    merge: (date: Date, time: Date) => Date | null;
--    inRange: typeof inRange;
--    lt: typeof lt;
--    lte: typeof lte;
--    gt: typeof gt;
--    gte: typeof gte;
--    eq: typeof eq;
--    neq: typeof neq;
--    startOf: typeof startOf;
--    endOf: typeof endOf;
--    add: typeof add;
--    range: (start: Date, end: Date, unit?: Unit) => Date[];
--    diff: (dateA: Date, dateB: Date, unit?: Unit) => number;
--    ceil: (date: Date, unit: Unit) => Date;
--    min: typeof min;
--    max: typeof max;
--    minutes: typeof minutes;
--    firstVisibleDay: (date: Date, localizer: any) => Date;
--    lastVisibleDay: (date: Date, localizer: any) => Date;
--    visibleDays: (date: Date, localizer: any) => Date[];
+-    merge?: (date: Date, time: Date) => Date | null;
+-    inRange?: typeof inRange;
+-    lt?: typeof lt;
+-    lte?: typeof lte;
+-    gt?: typeof gt;
+-    gte?: typeof gte;
+-    eq?: typeof eq;
+-    neq?: typeof neq;
+-    startOf?: typeof startOf;
+-    endOf?: typeof endOf;
+-    add?: typeof add;
+-    range?: (start: Date, end: Date, unit?: Unit) => Date[];
+-    diff?: (dateA: Date, dateB: Date, unit?: Unit) => number;
+-    ceil?: (date: Date, unit: Unit) => Date;
+-    min?: typeof min;
+-    max?: typeof max;
+-    minutes?: typeof minutes;
+-    firstVisibleDay?: (date: Date, localizer: any) => Date;
+-    lastVisibleDay?: (date: Date, localizer: any) => Date;
+-    visibleDays?: (date: Date, localizer: any) => Date[];
 -
--    getSlotDate: (date: Date, minutesFromMidnight: number, offset: number) => Date;
--    getTimezoneOffset: (date: Date) => number;
--    getDstOffset: (date: Date, dateB: Date) => number;
--    getTotalMin: (dateA: Date, dateB: Date) => number;
--    getMinutesFromMidnight: (date: Date) => number;
--    continuesPrior: (dateA: Date, dateB: Date) => boolean;
--    continuesAfter: (dateA: Date, dateB: Date, dateC: Date) => boolean;
--    sortEvents: (eventA: Event, eventB: Event) => boolean;
--    inEventRange: (event: Event, range: DateRange) => boolean;
--    isSameDate: (dateA: Date, dateB: Date) => boolean;
--    startAndEndAreDateOnly: (dateA: Date, dateB: Date) => boolean;
--    segmentOffset: number;
+-    getSlotDate?: (date: Date, minutesFromMidnight: number, offset: number) => Date;
+-    getTimezoneOffset?: (date: Date) => number;
+-    getDstOffset?: (date: Date, dateB: Date) => number;
+-    getTotalMin?: (dateA: Date, dateB: Date) => number;
+-    getMinutesFromMidnight?: (date: Date) => number;
+-    continuesPrior?: (dateA: Date, dateB: Date) => boolean;
+-    continuesAfter?: (dateA: Date, dateB: Date, dateC: Date) => boolean;
+-    sortEvents?: (eventA: Event, eventB: Event) => boolean;
+-    inEventRange?: (event: Event, range: DateRange) => boolean;
+-    isSameDate?: (dateA: Date, dateB: Date) => boolean;
+-    startAndEndAreDateOnly?: (dateA: Date, dateB: Date) => boolean;
+-    segmentOffset?: number;
 +  firstOfWeek: (culture: Culture) => number;
 +  format: (value: FormatInput, format: string, culture?: Culture) => string;
 +  formats: Formats;
 +  propType?: Validator<any> | undefined;
 +  startOfWeek: StartOfWeek;
-+  merge: (date: Date, time: Date) => Date | null;
-+  inRange: typeof inRange;
-+  lt: typeof lt;
-+  lte: typeof lte;
-+  gt: typeof gt;
-+  gte: typeof gte;
-+  eq: typeof eq;
-+  neq: typeof neq;
-+  startOf: typeof startOf;
-+  endOf: typeof endOf;
-+  add: typeof add;
-+  range: (start: Date, end: Date, unit?: Unit) => Date[];
-+  diff: (dateA: Date, dateB: Date, unit?: Unit) => number;
-+  ceil: (date: Date, unit: Unit) => Date;
-+  min: typeof min;
-+  max: typeof max;
-+  minutes: typeof minutes;
-+  firstVisibleDay: (date: Date, localizer: any) => Date;
-+  lastVisibleDay: (date: Date, localizer: any) => Date;
-+  visibleDays: (date: Date, localizer: any) => Date[];
++  merge?: (date: Date, time: Date) => Date | null;
++  inRange?: typeof inRange;
++  lt?: typeof lt;
++  lte?: typeof lte;
++  gt?: typeof gt;
++  gte?: typeof gte;
++  eq?: typeof eq;
++  neq?: typeof neq;
++  startOf?: typeof startOf;
++  endOf?: typeof endOf;
++  add?: typeof add;
++  range?: (start: Date, end: Date, unit?: Unit) => Date[];
++  diff?: (dateA: Date, dateB: Date, unit?: Unit) => number;
++  ceil?: (date: Date, unit: Unit) => Date;
++  min?: typeof min;
++  max?: typeof max;
++  minutes?: typeof minutes;
++  firstVisibleDay?: (date: Date, localizer: any) => Date;
++  lastVisibleDay?: (date: Date, localizer: any) => Date;
++  visibleDays?: (date: Date, localizer: any) => Date[];
 +
-+  getSlotDate: (
++  getSlotDate?: (
 +    date: Date,
 +    minutesFromMidnight: number,
 +    offset: number,
 +  ) => Date;
-+  getTimezoneOffset: (date: Date) => number;
-+  getDstOffset: (date: Date, dateB: Date) => number;
-+  getTotalMin: (dateA: Date, dateB: Date) => number;
-+  getMinutesFromMidnight: (date: Date) => number;
-+  continuesPrior: (dateA: Date, dateB: Date) => boolean;
-+  continuesAfter: (dateA: Date, dateB: Date, dateC: Date) => boolean;
-+  sortEvents: (eventA: Event, eventB: Event) => boolean;
++  getTimezoneOffset?: (date: Date) => number;
++  getDstOffset?: (date: Date, dateB: Date) => number;
++  getTotalMin?: (dateA: Date, dateB: Date) => number;
++  getMinutesFromMidnight?: (date: Date) => number;
++  continuesPrior?: (dateA: Date, dateB: Date) => boolean;
++  continuesAfter?: (dateA: Date, dateB: Date, dateC: Date) => boolean;
++  sortEvents?: (eventA: Event, eventB: Event) => boolean;
 +  inEventRange?: (args: InEventRangeArgs) => boolean;
-+  isSameDate: (dateA: Date, dateB: Date) => boolean;
-+  startAndEndAreDateOnly: (dateA: Date, dateB: Date) => boolean;
-+  segmentOffset: number;
++  isSameDate?: (dateA: Date, dateB: Date) => boolean;
++  startAndEndAreDateOnly?: (dateA: Date, dateB: Date) => boolean;
++  segmentOffset?: number;
  }
  
  // As documented in https://jquense.github.io/react-big-calendar/examples/?path=/docs/guides-localizers--page
@@ -882,7 +904,7 @@ index 9f9d620a4ef8ff6960d59e3e6de4f441ff5b1eae..3c24928c818378ed450b4835765d9d8c
 -    constructor(spec: DateLocalizerSpec);
 -
 -    format(value: FormatInput, format: string, culture?: Culture): string;
--    messages: Messages;
+-    messages: Messages<Event>;
 -
 -    merge: (date: Date, time: Date) => Date | null;
 -    inRange: typeof inRange;
@@ -972,7 +994,7 @@ index 9f9d620a4ef8ff6960d59e3e6de4f441ff5b1eae..3c24928c818378ed450b4835765d9d8c
 -    culture?: Culture | undefined;
 -    formats?: Formats | undefined;
 -    components?: Components<TEvent, TResource> | undefined;
--    messages?: Messages | undefined;
+-    messages?: Messages<TEvent> | undefined;
 -    dayLayoutAlgorithm?: DayLayoutAlgorithm | DayLayoutFunction<TEvent> | undefined;
 -    titleAccessor?: keyof TEvent | ((event: TEvent) => string) | undefined;
 -    tooltipAccessor?: keyof TEvent | ((event: TEvent) => string) | null | undefined;
@@ -983,6 +1005,7 @@ index 9f9d620a4ef8ff6960d59e3e6de4f441ff5b1eae..3c24928c818378ed450b4835765d9d8c
 -    resources?: TResource[] | undefined;
 -    resourceIdAccessor?: keyof TResource | ((resource: TResource) => any) | undefined;
 -    resourceTitleAccessor?: keyof TResource | ((resource: TResource) => any) | undefined;
+-    resourceGroupingLayout?: boolean | undefined;
 -    defaultView?: View | undefined;
 -    defaultDate?: stringOrDate | undefined;
 -    className?: string | undefined;
@@ -1113,7 +1136,7 @@ index 9f9d620a4ef8ff6960d59e3e6de4f441ff5b1eae..3c24928c818378ed450b4835765d9d8c
 +  culture?: Culture | undefined;
 +  formats?: Formats | undefined;
 +  components?: Components<TEvent, TResource> | undefined;
-+  messages?: Messages | undefined;
++  messages?: Messages<TEvent> | undefined;
 +  dayLayoutAlgorithm?:
 +    | DayLayoutAlgorithm
 +    | DayLayoutFunction<TEvent>
@@ -1137,6 +1160,7 @@ index 9f9d620a4ef8ff6960d59e3e6de4f441ff5b1eae..3c24928c818378ed450b4835765d9d8c
 +    | keyof TResource
 +    | ((resource: TResource) => any)
 +    | undefined;
++  resourceGroupingLayout?: boolean | undefined;
 +  defaultView?: View | undefined;
 +  defaultDate?: stringOrDate | undefined;
 +  className?: string | undefined;
@@ -1355,6 +1379,7 @@ index 9f9d620a4ef8ff6960d59e3e6de4f441ff5b1eae..3c24928c818378ed450b4835765d9d8c
 +  static defaultProps: {
 +    step: number;
 +    timeslots: number;
++    resourceGroupingLayout: boolean;
 +  };
 +}
  

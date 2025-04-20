@@ -1,30 +1,30 @@
 /** @import  {Calendar as RBCCalendar, CalendarProps,ViewComponent, View} from "react-big-calendar" */
 /** @import * as rbc from 'react-big-calendar' */
+import clsx from 'clsx'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { uncontrollable } from 'uncontrollable'
-import clsx from 'clsx'
 import {
   accessor,
+  views as componentViews,
   dateFormat,
   dateRangeFormat,
   DayLayoutAlgorithmPropType,
-  views as componentViews,
 } from './utils/propTypes'
 
-import { notify } from './utils/helpers'
-import { navigate, views } from './utils/constants'
 import { mergeWithDefaults } from './localizer'
+import NoopWrapper from './NoopWrapper'
+import Toolbar from './Toolbar'
+import { navigate, views } from './utils/constants'
+import { notify } from './utils/helpers'
 import message from './utils/messages'
 import moveDate from './utils/move'
 import VIEWS from './Views'
-import Toolbar from './Toolbar'
-import NoopWrapper from './NoopWrapper'
 
-import omit from 'lodash/omit'
 import defaults from 'lodash/defaults'
-import transform from 'lodash/transform'
 import mapValues from 'lodash/mapValues'
+import omit from 'lodash/omit'
+import transform from 'lodash/transform'
 import { wrapAccessor } from './utils/accessors'
 
 function viewNames(_views) {
@@ -229,6 +229,17 @@ class Calendar extends React.Component {
      * @type {(func|string)}
      */
     endAccessor: accessor,
+
+    /**
+     * The id of the event. Must resolve to a string or number. Used as the key for the event in the DOM. If not provided, the event will be given a key of 'evt\_{index}'.
+     *
+     * ```js
+     * string | number | (event: Object) => string | number
+     * ```
+     *
+     * @type {(func|string)}
+     */
+    eventIdAccessor: accessor,
 
     /**
      * Returns the id of the `resource` that the event is a member of. This
@@ -638,6 +649,13 @@ class Calendar extends React.Component {
     enableAutoScroll: PropTypes.bool,
 
     /**
+     * Determines the layout of resource groups in the calendar.
+     * When `true`, resources will be grouped by date in the week view.
+     * When `false`, resources will be grouped by week.
+     */
+    resourceGroupingLayout: PropTypes.bool,
+
+    /**
      * Specify a specific culture code for the Calendar.
      *
      * **Note: it's generally better to handle this globally via your i18n library.**
@@ -755,6 +773,7 @@ class Calendar extends React.Component {
      *   timeGutterHeader: MyTimeGutterWrapper,
      *   timeGutterWrapper: MyTimeGutterWrapper,
      *   resourceHeader: MyResourceHeader,
+     *   showMore: MyShowMoreEvent,
      *   toolbar: MyToolbar,
      *   agenda: {
      *   	 event: MyAgendaEvent, // with the agenda view use a different component to render events
@@ -790,6 +809,7 @@ class Calendar extends React.Component {
       timeGutterAllDayWrapper: PropTypes.elementType,
       timeGutterAllDaySlot: PropTypes.elementType,
       resourceHeader: PropTypes.elementType,
+      showMore: PropTypes.elementType,
 
       toolbar: PropTypes.elementType,
 
@@ -896,6 +916,8 @@ class Calendar extends React.Component {
     resourceIdAccessor: 'id',
     resourceTitleAccessor: 'title',
 
+    eventIdAccessor: 'id',
+
     longPressThreshold: 250,
     getNow: () => new Date(),
     dayLayoutAlgorithm: 'overlap',
@@ -923,6 +945,7 @@ class Calendar extends React.Component {
     resourceAccessor,
     resourceIdAccessor,
     resourceTitleAccessor,
+    eventIdAccessor,
     eventPropGetter,
     backgroundEventPropGetter,
     slotPropGetter,
@@ -972,6 +995,7 @@ class Calendar extends React.Component {
         resource: wrapAccessor(resourceAccessor),
         resourceId: wrapAccessor(resourceIdAccessor),
         resourceTitle: wrapAccessor(resourceTitleAccessor),
+        eventId: wrapAccessor(eventIdAccessor),
       },
     }
   }
@@ -1021,6 +1045,7 @@ class Calendar extends React.Component {
       toolbar,
       events,
       backgroundEvents,
+      resourceGroupingLayout,
       style,
       className,
       elementProps,
@@ -1084,6 +1109,7 @@ class Calendar extends React.Component {
           onSelectSlot={this.handleSelectSlot}
           onShowMore={onShowMore}
           doShowMoreDrillDown={doShowMoreDrillDown}
+          resourceGroupingLayout={resourceGroupingLayout}
         />
       </div>
     )

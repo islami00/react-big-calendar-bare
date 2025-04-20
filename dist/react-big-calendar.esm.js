@@ -6,6 +6,7 @@ import _createClass from '@babel/runtime/helpers/esm/createClass'
 import _callSuper from '@babel/runtime/helpers/esm/callSuper'
 import _inherits from '@babel/runtime/helpers/esm/inherits'
 import _slicedToArray from '@babel/runtime/helpers/esm/slicedToArray'
+import clsx from 'clsx'
 import React, {
   useEffect,
   useLayoutEffect,
@@ -17,7 +18,6 @@ import React, {
   useCallback,
 } from 'react'
 import { uncontrollable } from 'uncontrollable'
-import clsx from 'clsx'
 import PropTypes from 'prop-types'
 import invariant from 'invariant'
 import * as dates from 'date-arithmetic'
@@ -52,16 +52,16 @@ import listen from 'dom-helpers/listen'
 import range$1 from 'lodash/range'
 import memoize from 'memoize-one'
 import findIndex from 'lodash/findIndex'
+import getWidth from 'dom-helpers/width'
 import sortBy from 'lodash/sortBy'
 import scrollbarSize from 'dom-helpers/scrollbarSize'
-import getWidth from 'dom-helpers/width'
 import _toArray from '@babel/runtime/helpers/esm/toArray'
 import addClass from 'dom-helpers/addClass'
 import removeClass from 'dom-helpers/removeClass'
-import omit from 'lodash/omit'
 import defaults from 'lodash/defaults'
-import transform from 'lodash/transform'
 import mapValues from 'lodash/mapValues'
+import omit from 'lodash/omit'
+import transform from 'lodash/transform'
 import isBetween from 'dayjs/plugin/isBetween'
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
@@ -138,10 +138,6 @@ PropTypes.oneOfType([
   PropTypes.oneOf(['overlap', 'no-overlap']),
   PropTypes.func,
 ])
-
-function notify(handler, args) {
-  handler && handler.apply(null, [].concat(args))
-}
 
 /* eslint no-fallthrough: off */
 var MILLI = {
@@ -422,6 +418,124 @@ function mergeWithDefaults(localizer, culture, formatOverrides, messages) {
       },
     }
   )
+}
+
+/**
+ * @extends {ToolbarClass}
+ * @type  {typeof ToolbarClass}
+ * */
+var Toolbar = /*#__PURE__*/ (function (_React$Component) {
+  function Toolbar() {
+    var _this
+    _classCallCheck(this, Toolbar)
+    for (
+      var _len = arguments.length, args = new Array(_len), _key = 0;
+      _key < _len;
+      _key++
+    ) {
+      args[_key] = arguments[_key]
+    }
+    _this = _callSuper(this, Toolbar, [].concat(args))
+    /** @param {rbc.NavigateAction} action */
+    _this.navigate = function (action) {
+      _this.props.onNavigate(action)
+    }
+    /** @param {rbc.View} action */
+    _this.view = function (view) {
+      _this.props.onView(view)
+    }
+    return _this
+  }
+  _inherits(Toolbar, _React$Component)
+  return _createClass(Toolbar, [
+    {
+      key: 'render',
+      value: function render() {
+        var _this$props = this.props,
+          messages = _this$props.localizer.messages,
+          label = _this$props.label
+        return /*#__PURE__*/ React.createElement(
+          'div',
+          {
+            className: 'rbc-toolbar',
+          },
+          /*#__PURE__*/ React.createElement(
+            'span',
+            {
+              className: 'rbc-btn-group',
+            },
+            /*#__PURE__*/ React.createElement(
+              'button',
+              {
+                type: 'button',
+                onClick: this.navigate.bind(null, navigate.TODAY),
+              },
+              messages.today
+            ),
+            /*#__PURE__*/ React.createElement(
+              'button',
+              {
+                type: 'button',
+                onClick: this.navigate.bind(null, navigate.PREVIOUS),
+              },
+              messages.previous
+            ),
+            /*#__PURE__*/ React.createElement(
+              'button',
+              {
+                type: 'button',
+                onClick: this.navigate.bind(null, navigate.NEXT),
+              },
+              messages.next
+            )
+          ),
+          /*#__PURE__*/ React.createElement(
+            'span',
+            {
+              className: 'rbc-toolbar-label',
+            },
+            label
+          ),
+          /*#__PURE__*/ React.createElement(
+            'span',
+            {
+              className: 'rbc-btn-group',
+            },
+            this.viewNamesGroup(messages)
+          )
+        )
+      },
+    },
+    {
+      key: 'viewNamesGroup',
+      /** @param {rbc.Messages} action */
+      value: function viewNamesGroup(messages) {
+        var _this2 = this
+        var viewNames = this.props.views
+        var view = this.props.view
+        if (viewNames.length > 1) {
+          return viewNames.map(function (name) {
+            return /*#__PURE__*/ React.createElement(
+              'button',
+              {
+                type: 'button',
+                key: name,
+                className: clsx({
+                  'rbc-active': view === name,
+                }),
+                onClick: _this2.view.bind(null, name),
+              },
+              messages[name]
+            )
+          })
+        }
+      },
+    },
+  ])
+})(React.Component)
+
+function notify(handler, args) {
+  handler && handler.apply(null, [].concat(args))
 }
 
 var defaultMessages = {
@@ -1953,10 +2067,30 @@ var EventEndingRow = /*#__PURE__*/ (function (_React$Component) {
         var _this = this
         var _this$props2 = this.props,
           localizer = _this$props2.localizer,
-          slotMetrics = _this$props2.slotMetrics
+          slotMetrics = _this$props2.slotMetrics,
+          components = _this$props2.components
         var events = slotMetrics.getEventsForSlot(slot)
         var remainingEvents = eventsInSlot(segments, slot)
         var count = remainingEvents.length
+        if (
+          components !== null &&
+          components !== void 0 &&
+          components.showMore
+        ) {
+          var ShowMore = components.showMore
+          // The received slot seems to be 1-based, but the range we use to pull the date is 0-based
+          var slotDate = slotMetrics.getDateForSlot(slot - 1)
+          return count
+            ? /*#__PURE__*/ React.createElement(ShowMore, {
+                localizer: localizer,
+                slotDate: slotDate,
+                slot: slot,
+                count: count,
+                events: events,
+                remainingEvents: remainingEvents,
+              })
+            : false
+        }
         return count
           ? /*#__PURE__*/ React.createElement(
               'button',
@@ -2529,11 +2663,20 @@ var DateHeader = function DateHeader(_ref) {
       type: 'button',
       className: 'rbc-button-link',
       onClick: onDrillDown,
-      role: 'cell',
     },
     label
   )
 }
+DateHeader.propTypes =
+  process.env.NODE_ENV !== 'production'
+    ? {
+        label: PropTypes.node,
+        date: PropTypes.instanceOf(Date),
+        drilldownView: PropTypes.string,
+        onDrillDown: PropTypes.func,
+        isOffRange: PropTypes.bool,
+      }
+    : {}
 
 var _excluded$6 = ['date', 'className']
 var eventsForWeek = function eventsForWeek(
@@ -3718,10 +3861,16 @@ var DayColumn = /*#__PURE__*/ (function (_React$Component) {
         dayLayoutAlgorithm: dayLayoutAlgorithm,
       })
       return styledEvents.map(function (_ref2, idx) {
+        var _accessors$eventId
         var event = _ref2.event,
           style = _ref2.style
         var end = accessors.end(event)
         var start = accessors.start(event)
+        var key =
+          (_accessors$eventId = accessors.eventId(event)) !== null &&
+          _accessors$eventId !== void 0
+            ? _accessors$eventId
+            : 'evt_' + idx
         var format = 'eventTimeRangeFormat'
         var label
         var startsBeforeDay = slotMetrics.startsBeforeDay(start)
@@ -3743,7 +3892,7 @@ var DayColumn = /*#__PURE__*/ (function (_React$Component) {
           style: style,
           event: event,
           label: label,
-          key: 'evt_' + idx,
+          key: key,
           getters: getters,
           rtl: rtl,
           components: components,
@@ -4189,144 +4338,6 @@ DayColumn.defaultProps = {
   timeslots: 2,
 }
 
-/**
- * Since the TimeGutter only displays the 'times' of slots in a day, and is separate
- * from the Day Columns themselves, we check to see if the range contains an offset difference
- * and, if so, change the beginning and end 'date' by a day to properly display the slots times
- * used.
- */
-function adjustForDST(_ref) {
-  var min = _ref.min,
-    max = _ref.max,
-    localizer = _ref.localizer
-  if (localizer.getTimezoneOffset(min) !== localizer.getTimezoneOffset(max)) {
-    return {
-      start: localizer.add(min, -1, 'day'),
-      end: localizer.add(max, -1, 'day'),
-    }
-  }
-  return {
-    start: min,
-    end: max,
-  }
-}
-var TimeGutter = function TimeGutter(_ref2) {
-  var min = _ref2.min,
-    max = _ref2.max,
-    timeslots = _ref2.timeslots,
-    step = _ref2.step,
-    localizer = _ref2.localizer,
-    getNow = _ref2.getNow,
-    resource = _ref2.resource,
-    components = _ref2.components,
-    getters = _ref2.getters,
-    gutterRef = _ref2.gutterRef
-  var TimeGutterWrapper = components.timeGutterWrapper
-  var _useMemo = useMemo(
-      function () {
-        return adjustForDST({
-          min: min,
-          max: max,
-          localizer: localizer,
-        })
-      },
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      [
-        min === null || min === void 0 ? void 0 : min.toISOString(),
-        max === null || max === void 0 ? void 0 : max.toISOString(),
-        localizer,
-      ]
-    ),
-    start = _useMemo.start,
-    end = _useMemo.end
-  var _useState = useState(
-      getSlotMetrics({
-        min: start,
-        max: end,
-        timeslots: timeslots,
-        step: step,
-        localizer: localizer,
-      })
-    ),
-    _useState2 = _slicedToArray(_useState, 2),
-    slotMetrics = _useState2[0],
-    setSlotMetrics = _useState2[1]
-  useEffect(
-    function () {
-      if (slotMetrics) {
-        setSlotMetrics(
-          slotMetrics.update({
-            min: start,
-            max: end,
-            timeslots: timeslots,
-            step: step,
-            localizer: localizer,
-          })
-        )
-      }
-      /**
-       * We don't want this to fire when slotMetrics is updated as it would recursively bomb
-       */
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    },
-    [
-      start === null || start === void 0 ? void 0 : start.toISOString(),
-      end === null || end === void 0 ? void 0 : end.toISOString(),
-      timeslots,
-      step,
-    ]
-  )
-  var renderSlot = useCallback(
-    function (value, idx) {
-      if (idx) return null // don't return the first (0) idx
-
-      var isNow = slotMetrics.dateIsInGroup(getNow(), idx)
-      return /*#__PURE__*/ React.createElement(
-        'span',
-        {
-          className: clsx('rbc-label', isNow && 'rbc-now'),
-        },
-        localizer.format(value, 'timeGutterFormat')
-      )
-    },
-    [slotMetrics, localizer, getNow]
-  )
-  return /*#__PURE__*/ React.createElement(
-    TimeGutterWrapper,
-    {
-      slotMetrics: slotMetrics,
-    },
-    /*#__PURE__*/ React.createElement(
-      'div',
-      {
-        className: 'rbc-time-gutter rbc-time-column',
-        ref: gutterRef,
-      },
-      slotMetrics.groups.map(function (grp, idx) {
-        return /*#__PURE__*/ React.createElement(TimeSlotGroup, {
-          key: idx,
-          group: grp,
-          resource: resource,
-          components: components,
-          renderSlot: renderSlot,
-          getters: getters,
-        })
-      })
-    )
-  )
-}
-var TimeGutter$1 = /*#__PURE__*/ React.forwardRef(function (props, ref) {
-  return /*#__PURE__*/ React.createElement(
-    TimeGutter,
-    Object.assign(
-      {
-        gutterRef: ref,
-      },
-      props
-    )
-  )
-})
-
 var ResourceHeader = function ResourceHeader(_ref) {
   var label = _ref.label
   return /*#__PURE__*/ React.createElement(React.Fragment, null, label)
@@ -4576,6 +4587,368 @@ var TimeGridHeader = /*#__PURE__*/ (function (_React$Component) {
   ])
 })(React.Component)
 
+var TimeGridHeaderResources = /*#__PURE__*/ (function (_React$Component) {
+  function TimeGridHeaderResources() {
+    var _this
+    _classCallCheck(this, TimeGridHeaderResources)
+    for (
+      var _len = arguments.length, args = new Array(_len), _key = 0;
+      _key < _len;
+      _key++
+    ) {
+      args[_key] = arguments[_key]
+    }
+    _this = _callSuper(this, TimeGridHeaderResources, [].concat(args))
+    _this.handleHeaderClick = function (date, view, e) {
+      e.preventDefault()
+      notify(_this.props.onDrillDown, [date, view])
+    }
+    return _this
+  }
+  _inherits(TimeGridHeaderResources, _React$Component)
+  return _createClass(TimeGridHeaderResources, [
+    {
+      key: 'renderHeaderCells',
+      value: function renderHeaderCells(range) {
+        var _this2 = this
+        var _this$props = this.props,
+          localizer = _this$props.localizer,
+          getDrilldownView = _this$props.getDrilldownView,
+          getNow = _this$props.getNow,
+          dayProp = _this$props.getters.dayProp,
+          _this$props$component = _this$props.components,
+          _this$props$component2 = _this$props$component.header,
+          HeaderComponent =
+            _this$props$component2 === void 0 ? Header : _this$props$component2,
+          _this$props$component3 = _this$props$component.resourceHeader,
+          ResourceHeaderComponent =
+            _this$props$component3 === void 0
+              ? ResourceHeader
+              : _this$props$component3,
+          resources = _this$props.resources,
+          accessors = _this$props.accessors,
+          events = _this$props.events,
+          rtl = _this$props.rtl,
+          selectable = _this$props.selectable,
+          components = _this$props.components,
+          getters = _this$props.getters,
+          resizable = _this$props.resizable
+        var today = getNow()
+        var groupedEvents = resources.groupEvents(events)
+        return range.map(function (date, idx) {
+          var drilldownView = getDrilldownView(date)
+          var label = localizer.format(date, 'dayFormat')
+          var _dayProp = dayProp(date),
+            className = _dayProp.className,
+            style = _dayProp.style
+          var header = /*#__PURE__*/ React.createElement(HeaderComponent, {
+            date: date,
+            label: label,
+            localizer: localizer,
+          })
+          return /*#__PURE__*/ React.createElement(
+            'div',
+            {
+              key: idx,
+              className: 'rbc-time-header-content rbc-resource-grouping',
+            },
+            /*#__PURE__*/ React.createElement(
+              'div',
+              {
+                className: 'rbc-row rbc-time-header-cell'.concat(
+                  range.length <= 1 ? ' rbc-time-header-cell-single-day' : ''
+                ),
+              },
+              /*#__PURE__*/ React.createElement(
+                'div',
+                {
+                  style: style,
+                  className: clsx(
+                    'rbc-header',
+                    className,
+                    localizer.isSameDate(date, today) && 'rbc-today'
+                  ),
+                },
+                drilldownView
+                  ? /*#__PURE__*/ React.createElement(
+                      'button',
+                      {
+                        type: 'button',
+                        className: 'rbc-button-link',
+                        onClick: function onClick(e) {
+                          return _this2.handleHeaderClick(
+                            date,
+                            drilldownView,
+                            e
+                          )
+                        },
+                      },
+                      header
+                    )
+                  : /*#__PURE__*/ React.createElement('span', null, header)
+              )
+            ),
+            /*#__PURE__*/ React.createElement(
+              'div',
+              {
+                className: 'rbc-row',
+              },
+              resources.map(function (_ref, idx) {
+                var _ref2 = _slicedToArray(_ref, 2),
+                  id = _ref2[0],
+                  resource = _ref2[1]
+                return /*#__PURE__*/ React.createElement(
+                  'div',
+                  {
+                    key: 'resource_'.concat(id, '_').concat(idx),
+                    className: clsx(
+                      'rbc-header',
+                      className,
+                      localizer.isSameDate(date, today) && 'rbc-today'
+                    ),
+                  },
+                  /*#__PURE__*/ React.createElement(ResourceHeaderComponent, {
+                    index: idx,
+                    label: accessors.resourceTitle(resource),
+                    resource: resource,
+                  })
+                )
+              })
+            ),
+            /*#__PURE__*/ React.createElement(
+              'div',
+              {
+                className: 'rbc-row rbc-m-b-negative-3 rbc-h-full',
+              },
+              resources.map(function (_ref3, idx) {
+                var _ref4 = _slicedToArray(_ref3, 2),
+                  id = _ref4[0],
+                  resource = _ref4[1]
+                // Filter the grouped events by the current date.
+                var filteredEvents = (groupedEvents.get(id) || []).filter(
+                  function (event) {
+                    return (
+                      localizer.isSameDate(event.start, date) ||
+                      localizer.isSameDate(event.end, date)
+                    )
+                  }
+                )
+                return /*#__PURE__*/ React.createElement(DateContentRow, {
+                  key: 'resource_'.concat(id, '_').concat(idx),
+                  isAllDay: true,
+                  rtl: rtl,
+                  getNow: getNow,
+                  minRows: 2,
+                  maxRows: _this2.props.allDayMaxRows + 1,
+                  range: [date], // This ensures that only the single day is rendered
+                  events: filteredEvents, // Only show filtered events for this day.
+                  resourceId: resource && id,
+                  className: 'rbc-allday-cell',
+                  selectable: selectable,
+                  selected: _this2.props.selected,
+                  components: components,
+                  accessors: accessors,
+                  getters: getters,
+                  localizer: localizer,
+                  onSelect: _this2.props.onSelectEvent,
+                  onShowMore: _this2.props.onShowMore,
+                  onDoubleClick: _this2.props.onDoubleClickEvent,
+                  onKeyDown: _this2.props.onKeyPressEvent,
+                  onSelectSlot: _this2.props.onSelectSlot,
+                  longPressThreshold: _this2.props.longPressThreshold,
+                  resizable: resizable,
+                })
+              })
+            )
+          )
+        })
+      },
+    },
+    {
+      key: 'render',
+      value: function render() {
+        var _this$props2 = this.props,
+          width = _this$props2.width,
+          rtl = _this$props2.rtl,
+          range = _this$props2.range,
+          scrollRef = _this$props2.scrollRef,
+          isOverflowing = _this$props2.isOverflowing,
+          TimeGutterHeader = _this$props2.components.timeGutterHeader
+        var style = {}
+        if (isOverflowing) {
+          style[rtl ? 'marginLeft' : 'marginRight'] = ''.concat(
+            scrollbarSize() - 1,
+            'px'
+          )
+        }
+        return /*#__PURE__*/ React.createElement(
+          'div',
+          {
+            style: style,
+            ref: scrollRef,
+            className: clsx(
+              'rbc-time-header',
+              isOverflowing && 'rbc-overflowing'
+            ),
+          },
+          /*#__PURE__*/ React.createElement(
+            'div',
+            {
+              className: 'rbc-label rbc-time-header-gutter',
+              style: {
+                width: width,
+                minWidth: width,
+                maxWidth: width,
+              },
+            },
+            TimeGutterHeader &&
+              /*#__PURE__*/ React.createElement(TimeGutterHeader, null)
+          ),
+          this.renderHeaderCells(range)
+        )
+      },
+    },
+  ])
+})(React.Component)
+
+/**
+ * Since the TimeGutter only displays the 'times' of slots in a day, and is separate
+ * from the Day Columns themselves, we check to see if the range contains an offset difference
+ * and, if so, change the beginning and end 'date' by a day to properly display the slots times
+ * used.
+ */
+function adjustForDST(_ref) {
+  var min = _ref.min,
+    max = _ref.max,
+    localizer = _ref.localizer
+  if (localizer.getTimezoneOffset(min) !== localizer.getTimezoneOffset(max)) {
+    return {
+      start: localizer.add(min, -1, 'day'),
+      end: localizer.add(max, -1, 'day'),
+    }
+  }
+  return {
+    start: min,
+    end: max,
+  }
+}
+var TimeGutter = function TimeGutter(_ref2) {
+  var min = _ref2.min,
+    max = _ref2.max,
+    timeslots = _ref2.timeslots,
+    step = _ref2.step,
+    localizer = _ref2.localizer,
+    getNow = _ref2.getNow,
+    resource = _ref2.resource,
+    components = _ref2.components,
+    getters = _ref2.getters,
+    gutterRef = _ref2.gutterRef
+  var TimeGutterWrapper = components.timeGutterWrapper
+  var _useMemo = useMemo(
+      function () {
+        return adjustForDST({
+          min: min,
+          max: max,
+          localizer: localizer,
+        })
+      },
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [
+        min === null || min === void 0 ? void 0 : min.toISOString(),
+        max === null || max === void 0 ? void 0 : max.toISOString(),
+        localizer,
+      ]
+    ),
+    start = _useMemo.start,
+    end = _useMemo.end
+  var _useState = useState(
+      getSlotMetrics({
+        min: start,
+        max: end,
+        timeslots: timeslots,
+        step: step,
+        localizer: localizer,
+      })
+    ),
+    _useState2 = _slicedToArray(_useState, 2),
+    slotMetrics = _useState2[0],
+    setSlotMetrics = _useState2[1]
+  useEffect(
+    function () {
+      if (slotMetrics) {
+        setSlotMetrics(
+          slotMetrics.update({
+            min: start,
+            max: end,
+            timeslots: timeslots,
+            step: step,
+            localizer: localizer,
+          })
+        )
+      }
+      /**
+       * We don't want this to fire when slotMetrics is updated as it would recursively bomb
+       */
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [
+      start === null || start === void 0 ? void 0 : start.toISOString(),
+      end === null || end === void 0 ? void 0 : end.toISOString(),
+      timeslots,
+      step,
+    ]
+  )
+  var renderSlot = useCallback(
+    function (value, idx) {
+      if (idx) return null // don't return the first (0) idx
+
+      var isNow = slotMetrics.dateIsInGroup(getNow(), idx)
+      return /*#__PURE__*/ React.createElement(
+        'span',
+        {
+          className: clsx('rbc-label', isNow && 'rbc-now'),
+        },
+        localizer.format(value, 'timeGutterFormat')
+      )
+    },
+    [slotMetrics, localizer, getNow]
+  )
+  return /*#__PURE__*/ React.createElement(
+    TimeGutterWrapper,
+    {
+      slotMetrics: slotMetrics,
+    },
+    /*#__PURE__*/ React.createElement(
+      'div',
+      {
+        className: 'rbc-time-gutter rbc-time-column',
+        ref: gutterRef,
+      },
+      slotMetrics.groups.map(function (grp, idx) {
+        return /*#__PURE__*/ React.createElement(TimeSlotGroup, {
+          key: idx,
+          group: grp,
+          resource: resource,
+          components: components,
+          renderSlot: renderSlot,
+          getters: getters,
+        })
+      })
+    )
+  )
+}
+var TimeGutter$1 = /*#__PURE__*/ React.forwardRef(function (props, ref) {
+  return /*#__PURE__*/ React.createElement(
+    TimeGutter,
+    Object.assign(
+      {
+        gutterRef: ref,
+      },
+      props
+    )
+  )
+})
+
 /**
  * @import ResourcesFn from 'react-big-calendar/lib/utils/Resources'
  * @import {CalendarAccessors, Resource, Event} from 'react-big-calendar'
@@ -4796,86 +5169,210 @@ var TimeGrid = /*#__PURE__*/ (function (_Component) {
       },
     },
     {
-      key: 'renderEvents',
-      value: function renderEvents(range, events, backgroundEvents, now) {
-        var _this2 = this
+      key: 'renderDayColumn',
+      value: function renderDayColumn(
+        date,
+        id,
+        resource,
+        groupedEvents,
+        groupedBackgroundEvents,
+        localizer,
+        accessors,
+        components,
+        dayLayoutAlgorithm,
+        now
+      ) {
         var _this$props2 = this.props,
           min = _this$props2.min,
-          max = _this$props2.max,
-          components = _this$props2.components,
-          accessors = _this$props2.accessors,
-          localizer = _this$props2.localizer,
-          dayLayoutAlgorithm = _this$props2.dayLayoutAlgorithm
-        var resources = this.memoizedResources(this.props.resources, accessors)
-        var groupedEvents = resources.groupEvents(events)
-        var groupedBackgroundEvents = resources.groupEvents(backgroundEvents)
-        return resources.map(function (_ref, i) {
+          max = _this$props2.max
+        var daysEvents = (groupedEvents.get(id) || []).filter(function (event) {
+          return localizer.inRange(
+            date,
+            accessors.start(event),
+            accessors.end(event),
+            'day'
+          )
+        })
+        var daysBackgroundEvents = (
+          groupedBackgroundEvents.get(id) || []
+        ).filter(function (event) {
+          return localizer.inRange(
+            date,
+            accessors.start(event),
+            accessors.end(event),
+            'day'
+          )
+        })
+        return /*#__PURE__*/ React.createElement(
+          DayColumn,
+          Object.assign({}, this.props, {
+            localizer: localizer,
+            min: localizer.merge(date, min),
+            max: localizer.merge(date, max),
+            resource: resource && id,
+            components: components,
+            isNow: localizer.isSameDate(date, now),
+            key: ''.concat(id, '-').concat(date),
+            date: date,
+            events: daysEvents,
+            backgroundEvents: daysBackgroundEvents,
+            dayLayoutAlgorithm: dayLayoutAlgorithm,
+          })
+        )
+      },
+    },
+    {
+      key: 'renderResourcesFirst',
+      value: function renderResourcesFirst(
+        range,
+        resources,
+        groupedEvents,
+        groupedBackgroundEvents,
+        localizer,
+        accessors,
+        now,
+        components,
+        dayLayoutAlgorithm
+      ) {
+        var _this2 = this
+        return resources.map(function (_ref) {
           var _ref2 = _slicedToArray(_ref, 2),
             id = _ref2[0],
             resource = _ref2[1]
-          return range.map(function (date, jj) {
-            var daysEvents = (groupedEvents.get(id) || []).filter(function (
-              event
-            ) {
-              return localizer.inRange(
-                date,
-                accessors.start(event),
-                accessors.end(event),
-                'day'
-              )
-            })
-            var daysBackgroundEvents = (
-              groupedBackgroundEvents.get(id) || []
-            ).filter(function (event) {
-              return localizer.inRange(
-                date,
-                accessors.start(event),
-                accessors.end(event),
-                'day'
-              )
-            })
-            return /*#__PURE__*/ React.createElement(
-              DayColumn,
-              Object.assign({}, _this2.props, {
-                localizer: localizer,
-                min: localizer.merge(date, min),
-                max: localizer.merge(date, max),
-                resource: resource && id,
-                components: components,
-                isNow: localizer.isSameDate(date, now),
-                key: i + '-' + jj,
-                date: date,
-                events: daysEvents,
-                backgroundEvents: daysBackgroundEvents,
-                dayLayoutAlgorithm: dayLayoutAlgorithm,
-              })
+          return range.map(function (date) {
+            return _this2.renderDayColumn(
+              date,
+              id,
+              resource,
+              groupedEvents,
+              groupedBackgroundEvents,
+              localizer,
+              accessors,
+              components,
+              dayLayoutAlgorithm,
+              now
             )
           })
         })
       },
     },
     {
+      key: 'renderRangeFirst',
+      value: function renderRangeFirst(
+        range,
+        resources,
+        groupedEvents,
+        groupedBackgroundEvents,
+        localizer,
+        accessors,
+        now,
+        components,
+        dayLayoutAlgorithm
+      ) {
+        var _this3 = this
+        return range.map(function (date) {
+          return /*#__PURE__*/ React.createElement(
+            'div',
+            {
+              style: {
+                display: 'flex',
+                minHeight: '100%',
+                flex: 1,
+              },
+              key: date,
+            },
+            resources.map(function (_ref3) {
+              var _ref4 = _slicedToArray(_ref3, 2),
+                id = _ref4[0],
+                resource = _ref4[1]
+              return /*#__PURE__*/ React.createElement(
+                'div',
+                {
+                  style: {
+                    flex: 1,
+                  },
+                  key: accessors.resourceId(resource),
+                },
+                _this3.renderDayColumn(
+                  date,
+                  id,
+                  resource,
+                  groupedEvents,
+                  groupedBackgroundEvents,
+                  localizer,
+                  accessors,
+                  components,
+                  dayLayoutAlgorithm,
+                  now
+                )
+              )
+            })
+          )
+        })
+      },
+    },
+    {
+      key: 'renderEvents',
+      value: function renderEvents(range, events, backgroundEvents, now) {
+        var _this$props3 = this.props,
+          accessors = _this$props3.accessors,
+          localizer = _this$props3.localizer,
+          resourceGroupingLayout = _this$props3.resourceGroupingLayout,
+          components = _this$props3.components,
+          dayLayoutAlgorithm = _this$props3.dayLayoutAlgorithm
+        var resources = this.memoizedResources(this.props.resources, accessors)
+        var groupedEvents = resources.groupEvents(events)
+        var groupedBackgroundEvents = resources.groupEvents(backgroundEvents)
+        if (!resourceGroupingLayout) {
+          return this.renderResourcesFirst(
+            range,
+            resources,
+            groupedEvents,
+            groupedBackgroundEvents,
+            localizer,
+            accessors,
+            now,
+            components,
+            dayLayoutAlgorithm
+          )
+        } else {
+          return this.renderRangeFirst(
+            range,
+            resources,
+            groupedEvents,
+            groupedBackgroundEvents,
+            localizer,
+            accessors,
+            now,
+            components,
+            dayLayoutAlgorithm
+          )
+        }
+      },
+    },
+    {
       key: 'render',
       value: function render() {
         var _this$props$allDayMax
-        var _this$props3 = this.props,
-          events = _this$props3.events,
-          backgroundEvents = _this$props3.backgroundEvents,
-          range = _this$props3.range,
-          width = _this$props3.width,
-          rtl = _this$props3.rtl,
-          selected = _this$props3.selected,
-          getNow = _this$props3.getNow,
-          resources = _this$props3.resources,
-          components = _this$props3.components,
-          accessors = _this$props3.accessors,
-          getters = _this$props3.getters,
-          localizer = _this$props3.localizer,
-          min = _this$props3.min,
-          max = _this$props3.max,
-          showMultiDayTimes = _this$props3.showMultiDayTimes,
-          longPressThreshold = _this$props3.longPressThreshold,
-          resizable = _this$props3.resizable
+        var _this$props4 = this.props,
+          events = _this$props4.events,
+          backgroundEvents = _this$props4.backgroundEvents,
+          range = _this$props4.range,
+          width = _this$props4.width,
+          rtl = _this$props4.rtl,
+          selected = _this$props4.selected,
+          getNow = _this$props4.getNow,
+          resources = _this$props4.resources,
+          components = _this$props4.components,
+          accessors = _this$props4.accessors,
+          getters = _this$props4.getters,
+          localizer = _this$props4.localizer,
+          min = _this$props4.min,
+          max = _this$props4.max,
+          showMultiDayTimes = _this$props4.showMultiDayTimes,
+          longPressThreshold = _this$props4.longPressThreshold,
+          resizable = _this$props4.resizable,
+          resourceGroupingLayout = _this$props4.resourceGroupingLayout
         width = width || this.state.gutterWidth
         var start = range[0],
           end = range[range.length - 1]
@@ -4906,6 +5403,37 @@ var TimeGrid = /*#__PURE__*/ (function (_Component) {
         allDayEvents.sort(function (a, b) {
           return sortEvents(a, b, accessors, localizer)
         })
+        var headerProps = {
+          range: range,
+          events: allDayEvents,
+          width: width,
+          rtl: rtl,
+          getNow: getNow,
+          localizer: localizer,
+          selected: selected,
+          allDayMaxRows: this.props.showAllEvents
+            ? Infinity
+            : (_this$props$allDayMax = this.props.allDayMaxRows) !== null &&
+              _this$props$allDayMax !== void 0
+            ? _this$props$allDayMax
+            : Infinity,
+          resources: this.memoizedResources(resources, accessors),
+          selectable: this.props.selectable,
+          accessors: accessors,
+          getters: getters,
+          components: components,
+          scrollRef: this.scrollRef,
+          isOverflowing: this.state.isOverflowing,
+          longPressThreshold: longPressThreshold,
+          onSelectSlot: this.handleSelectAllDaySlot,
+          onSelectEvent: this.handleSelectEvent,
+          onShowMore: this.handleShowMore,
+          onDoubleClickEvent: this.props.onDoubleClickEvent,
+          onKeyPressEvent: this.props.onKeyPressEvent,
+          onDrillDown: this.props.onDrillDown,
+          getDrilldownView: this.props.getDrilldownView,
+          resizable: resizable,
+        }
         return /*#__PURE__*/ React.createElement(
           'div',
           {
@@ -4915,37 +5443,12 @@ var TimeGrid = /*#__PURE__*/ (function (_Component) {
             ),
             ref: this.containerRef,
           },
-          /*#__PURE__*/ React.createElement(TimeGridHeader, {
-            range: range,
-            events: allDayEvents,
-            width: width,
-            rtl: rtl,
-            getNow: getNow,
-            localizer: localizer,
-            selected: selected,
-            allDayMaxRows: this.props.showAllEvents
-              ? Infinity
-              : (_this$props$allDayMax = this.props.allDayMaxRows) !== null &&
-                _this$props$allDayMax !== void 0
-              ? _this$props$allDayMax
-              : Infinity,
-            resources: this.memoizedResources(resources, accessors),
-            selectable: this.props.selectable,
-            accessors: accessors,
-            getters: getters,
-            components: components,
-            scrollRef: this.scrollRef,
-            isOverflowing: this.state.isOverflowing,
-            longPressThreshold: longPressThreshold,
-            onSelectSlot: this.handleSelectAllDaySlot,
-            onSelectEvent: this.handleSelectEvent,
-            onShowMore: this.handleShowMore,
-            onDoubleClickEvent: this.props.onDoubleClickEvent,
-            onKeyPressEvent: this.props.onKeyPressEvent,
-            onDrillDown: this.props.onDrillDown,
-            getDrilldownView: this.props.getDrilldownView,
-            resizable: resizable,
-          }),
+          resources && resources.length > 1 && resourceGroupingLayout
+            ? /*#__PURE__*/ React.createElement(
+                TimeGridHeaderResources,
+                headerProps
+              )
+            : /*#__PURE__*/ React.createElement(TimeGridHeader, headerProps),
           this.props.popup && this.renderOverlay(),
           /*#__PURE__*/ React.createElement(
             'div',
@@ -4982,7 +5485,7 @@ var TimeGrid = /*#__PURE__*/ (function (_Component) {
       value: function renderOverlay() {
         var _this$state$overlay,
           _this$state,
-          _this3 = this
+          _this4 = this
         var overlay =
           (_this$state$overlay =
             (_this$state = this.state) === null || _this$state === void 0
@@ -4990,16 +5493,16 @@ var TimeGrid = /*#__PURE__*/ (function (_Component) {
               : _this$state.overlay) !== null && _this$state$overlay !== void 0
             ? _this$state$overlay
             : {}
-        var _this$props4 = this.props,
-          accessors = _this$props4.accessors,
-          localizer = _this$props4.localizer,
-          components = _this$props4.components,
-          getters = _this$props4.getters,
-          selected = _this$props4.selected,
-          popupOffset = _this$props4.popupOffset,
-          handleDragStart = _this$props4.handleDragStart
+        var _this$props5 = this.props,
+          accessors = _this$props5.accessors,
+          localizer = _this$props5.localizer,
+          components = _this$props5.components,
+          getters = _this$props5.getters,
+          selected = _this$props5.selected,
+          popupOffset = _this$props5.popupOffset,
+          handleDragStart = _this$props5.handleDragStart
         var onHide = function onHide() {
-          return _this3.setState({
+          return _this4.setState({
             overlay: null,
           })
         }
@@ -5032,21 +5535,21 @@ var TimeGrid = /*#__PURE__*/ (function (_Component) {
     {
       key: 'measureGutter',
       value: function measureGutter() {
-        var _this4 = this
+        var _this5 = this
         if (this.measureGutterAnimationFrameRequest) {
           window.cancelAnimationFrame(this.measureGutterAnimationFrameRequest)
         }
         this.measureGutterAnimationFrameRequest = window.requestAnimationFrame(
           function () {
-            var _this4$gutterRef
+            var _this5$gutterRef
             var width =
-              (_this4$gutterRef = _this4.gutterRef) !== null &&
-              _this4$gutterRef !== void 0 &&
-              _this4$gutterRef.current
-                ? getWidth(_this4.gutterRef.current)
+              (_this5$gutterRef = _this5.gutterRef) !== null &&
+              _this5$gutterRef !== void 0 &&
+              _this5$gutterRef.current
+                ? getWidth(_this5.gutterRef.current)
                 : undefined
-            if (width && _this4.state.gutterWidth !== width) {
-              _this4.setState({
+            if (width && _this5.state.gutterWidth !== width) {
+              _this5.setState({
                 gutterWidth: width,
               })
             }
@@ -5091,6 +5594,8 @@ var TimeGrid = /*#__PURE__*/ (function (_Component) {
 TimeGrid.defaultProps = {
   step: 30,
   timeslots: 2,
+  // To be compatible with old versions, default as `false`.
+  resourceGroupingLayout: false,
 }
 
 var _excluded$4 = [
@@ -5700,120 +6205,6 @@ function moveDate(View, _ref) {
 }
 
 /**
- * @extends {ToolbarClass}
- * @type  {typeof ToolbarClass}
- * */
-var Toolbar = /*#__PURE__*/ (function (_React$Component) {
-  function Toolbar() {
-    var _this
-    _classCallCheck(this, Toolbar)
-    for (
-      var _len = arguments.length, args = new Array(_len), _key = 0;
-      _key < _len;
-      _key++
-    ) {
-      args[_key] = arguments[_key]
-    }
-    _this = _callSuper(this, Toolbar, [].concat(args))
-    /** @param {rbc.NavigateAction} action */
-    _this.navigate = function (action) {
-      _this.props.onNavigate(action)
-    }
-    /** @param {rbc.View} action */
-    _this.view = function (view) {
-      _this.props.onView(view)
-    }
-    return _this
-  }
-  _inherits(Toolbar, _React$Component)
-  return _createClass(Toolbar, [
-    {
-      key: 'render',
-      value: function render() {
-        var _this$props = this.props,
-          messages = _this$props.localizer.messages,
-          label = _this$props.label
-        return /*#__PURE__*/ React.createElement(
-          'div',
-          {
-            className: 'rbc-toolbar',
-          },
-          /*#__PURE__*/ React.createElement(
-            'span',
-            {
-              className: 'rbc-btn-group',
-            },
-            /*#__PURE__*/ React.createElement(
-              'button',
-              {
-                type: 'button',
-                onClick: this.navigate.bind(null, navigate.TODAY),
-              },
-              messages.today
-            ),
-            /*#__PURE__*/ React.createElement(
-              'button',
-              {
-                type: 'button',
-                onClick: this.navigate.bind(null, navigate.PREVIOUS),
-              },
-              messages.previous
-            ),
-            /*#__PURE__*/ React.createElement(
-              'button',
-              {
-                type: 'button',
-                onClick: this.navigate.bind(null, navigate.NEXT),
-              },
-              messages.next
-            )
-          ),
-          /*#__PURE__*/ React.createElement(
-            'span',
-            {
-              className: 'rbc-toolbar-label',
-            },
-            label
-          ),
-          /*#__PURE__*/ React.createElement(
-            'span',
-            {
-              className: 'rbc-btn-group',
-            },
-            this.viewNamesGroup(messages)
-          )
-        )
-      },
-    },
-    {
-      key: 'viewNamesGroup',
-      /** @param {rbc.Messages} action */
-      value: function viewNamesGroup(messages) {
-        var _this2 = this
-        var viewNames = this.props.views
-        var view = this.props.view
-        if (viewNames.length > 1) {
-          return viewNames.map(function (name) {
-            return /*#__PURE__*/ React.createElement(
-              'button',
-              {
-                type: 'button',
-                key: name,
-                className: clsx({
-                  'rbc-active': view === name,
-                }),
-                onClick: _this2.view.bind(null, name),
-              },
-              messages[name]
-            )
-          })
-        }
-      },
-    },
-  ])
-})(React.Component)
-
-/**
  * Retrieve via an accessor-like property
  *
  *    accessor(obj, 'name')   // => retrieves obj['name']
@@ -5844,6 +6235,7 @@ var _excluded = ['view', 'date', 'getNow', 'onNavigate'],
     'toolbar',
     'events',
     'backgroundEvents',
+    'resourceGroupingLayout',
     'style',
     'className',
     'elementProps',
@@ -6070,6 +6462,7 @@ var Calendar = /*#__PURE__*/ (function (_React$Component) {
             toolbar = _this$props4.toolbar,
             events = _this$props4.events,
             backgroundEvents = _this$props4.backgroundEvents,
+            resourceGroupingLayout = _this$props4.resourceGroupingLayout,
             style = _this$props4.style,
             className = _this$props4.className,
             elementProps = _this$props4.elementProps,
@@ -6139,6 +6532,7 @@ var Calendar = /*#__PURE__*/ (function (_React$Component) {
                 onSelectSlot: this.handleSelectSlot,
                 onShowMore: onShowMore,
                 doShowMoreDrillDown: doShowMoreDrillDown,
+                resourceGroupingLayout: resourceGroupingLayout,
               })
             )
           )
@@ -6167,6 +6561,7 @@ var Calendar = /*#__PURE__*/ (function (_React$Component) {
             resourceAccessor = _ref2.resourceAccessor,
             resourceIdAccessor = _ref2.resourceIdAccessor,
             resourceTitleAccessor = _ref2.resourceTitleAccessor,
+            eventIdAccessor = _ref2.eventIdAccessor,
             eventPropGetter = _ref2.eventPropGetter,
             backgroundEventPropGetter = _ref2.backgroundEventPropGetter,
             slotPropGetter = _ref2.slotPropGetter,
@@ -6245,6 +6640,7 @@ var Calendar = /*#__PURE__*/ (function (_React$Component) {
               resource: wrapAccessor(resourceAccessor),
               resourceId: wrapAccessor(resourceIdAccessor),
               resourceTitle: wrapAccessor(resourceTitleAccessor),
+              eventId: wrapAccessor(eventIdAccessor),
             },
           }
         },
@@ -6273,6 +6669,7 @@ Calendar.defaultProps = {
   resourceAccessor: 'resourceId',
   resourceIdAccessor: 'id',
   resourceTitleAccessor: 'title',
+  eventIdAccessor: 'id',
   longPressThreshold: 250,
   getNow: function getNow() {
     return new Date()
@@ -7439,7 +7836,7 @@ var weekRangeFormat$1 = function weekRangeFormat(_ref5, culture, local) {
 var formats$1 = {
   dateFormat: 'dd',
   dayFormat: 'dd eee',
-  weekdayFormat: 'cccc',
+  weekdayFormat: 'ccc',
   selectRangeFormat: timeRangeFormat$1,
   eventTimeRangeFormat: timeRangeFormat$1,
   eventTimeRangeStartFormat: timeRangeStartFormat$1,

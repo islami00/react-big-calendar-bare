@@ -55,6 +55,7 @@ $active-border: color.adjust($btn-border, $lightness: -12%);
 
     &:hover {
       color: $btn-color;
+      cursor: pointer;
       background-color: $active-background;
       border-color: $active-border;
     }
