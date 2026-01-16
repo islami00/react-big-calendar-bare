@@ -137,6 +137,13 @@
   "pnpm": {
     "patchedDependencies": {
       "@types/react-big-calendar@1.16.1": "patches/@types__react-big-calendar@1.16.1.patch"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "fsevents"
+    ],
+    "ignoredBuiltDependencies": [
+      "core-js",
+      "core-js-pure"
+    ]
   }
 }
